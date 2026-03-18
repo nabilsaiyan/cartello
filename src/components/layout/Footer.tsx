@@ -1,4 +1,5 @@
 import Link from "next/link"
+import { NewsletterForm } from "./NewsletterForm"
 
 const footerLinks = {
   Shop: [
@@ -37,19 +38,7 @@ export function Footer() {
                 Subscribe for new arrivals, exclusive offers, and style inspiration
               </p>
             </div>
-            <form className="flex w-full max-w-sm gap-2">
-              <input
-                type="email"
-                placeholder="Enter your email"
-                className="flex-1 rounded-full border border-neutral-700 bg-neutral-800 px-4 py-2.5 text-sm text-white placeholder-neutral-500 outline-none focus:border-neutral-500"
-              />
-              <button
-                type="submit"
-                className="rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-neutral-900 transition-colors hover:bg-neutral-100"
-              >
-                Subscribe
-              </button>
-            </form>
+            <NewsletterForm />
           </div>
         </div>
       </div>
