@@ -2,7 +2,14 @@ import Link from "next/link"
 import { ArrowRight } from "lucide-react"
 import { prisma } from "@/lib/prisma"
 import { ProductCard } from "@/components/product/ProductCard"
+import { FREE_SHIPPING_THRESHOLD } from "@/lib/constants"
 import type { ProductWithRelations } from "@/types"
+import type { Metadata } from "next"
+
+export const metadata: Metadata = {
+  title: "Cartello — Premium Menswear",
+  description: "Discover premium menswear crafted for those who appreciate quality and style. Free shipping on orders over €" + FREE_SHIPPING_THRESHOLD + ".",
+}
 
 export const revalidate = 3600
 
@@ -40,7 +47,7 @@ const categories = [
 ]
 
 const marqueeItems = [
-  "Free shipping over €50",
+  `Free shipping over €${FREE_SHIPPING_THRESHOLD}`,
   "New arrivals every week",
   "30-day hassle-free returns",
   "Sustainable packaging",
