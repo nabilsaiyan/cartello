@@ -33,20 +33,19 @@ export async function POST(req: Request) {
     },
   })
 
-  // Store address
-  let addressRecord
-  if (session?.user?.id) {
-    addressRecord = await prisma.address.create({
-      data: { userId: session.user.id, ...address },
+  // Store address — for guests, upsert a shared guest account so userId is always valid
+  let addressUserId = session?.user?.id
+  if (!addressUserId) {
+    const guest = await prisma.user.upsert({
+      where: { email: "guest@cartello.com" },
+      create: { email: "guest@cartello.com", name: "Guest" },
+      update: {},
     })
-  } else {
-    addressRecord = await prisma.address.create({
-      data: {
-        userId: (await prisma.user.findFirst({ where: { email: "guest@cartello.com" } }))?.id ?? session?.user?.id ?? "",
-        ...address,
-      },
-    })
+    addressUserId = guest.id
   }
+  const addressRecord = await prisma.address.create({
+    data: { userId: addressUserId, ...address },
+  })
 
   // Create pending order
   const order = await prisma.order.create({
