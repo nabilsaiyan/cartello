@@ -1,13 +1,16 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useSession } from "next-auth/react"
 import { toast } from "sonner"
-import type { Metadata } from "next"
 
 export default function ProfilePage() {
   const { data: session, update } = useSession()
-  const [name, setName] = useState(session?.user?.name ?? "")
+  const [name, setName] = useState("")
+
+  useEffect(() => {
+    if (session?.user?.name) setName(session.user.name)
+  }, [session?.user?.name])
   const [saving, setSaving] = useState(false)
 
   async function handleSave(e: React.FormEvent) {
