@@ -53,6 +53,7 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
               </div>
               <button
                 onClick={onClose}
+                aria-label="Close cart"
                 className="rounded-full p-1.5 text-neutral-400 transition-colors hover:bg-neutral-100 hover:text-neutral-900"
               >
                 <X className="h-5 w-5" />
@@ -181,7 +182,7 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
                     <span className="font-semibold text-neutral-900">{formatPrice(total)}</span>
                   </div>
                   <p className="text-xs text-neutral-400">
-                    Shipping and taxes calculated at checkout
+                    Shipping calculated at checkout
                   </p>
                   <Link
                     href="/checkout"
