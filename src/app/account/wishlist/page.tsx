@@ -1,3 +1,4 @@
+import Link from "next/link"
 import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import { ProductCard } from "@/components/product/ProductCard"
@@ -21,12 +22,16 @@ export default async function WishlistPage() {
       {products.length === 0 ? (
         <div className="rounded-2xl border border-neutral-100 py-16 text-center">
           <p className="text-neutral-500">Your wishlist is empty</p>
-          <a href="/products" className="mt-3 inline-block text-sm font-medium text-neutral-900 underline">
-            Browse products
-          </a>
+          <p className="mt-1 text-sm text-neutral-400">Save items you love and find them here</p>
+          <Link
+            href="/products"
+            className="mt-5 inline-block rounded-full bg-neutral-900 px-6 py-2.5 text-sm font-semibold text-white hover:bg-neutral-700"
+          >
+            Browse Products
+          </Link>
         </div>
       ) : (
-        <div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3">
+        <div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 lg:grid-cols-4">
           {products.map((p) => <ProductCard key={p.id} product={p} />)}
         </div>
       )}
