@@ -61,12 +61,11 @@ export function VariantSelector({ variants, selectedId, onSelect }: VariantSelec
                   key={color}
                   onClick={() => selectColor(color)}
                   disabled={outOfStock}
-                  title={color}
+                  aria-label={`${color}${outOfStock ? " — out of stock" : ""}`}
+                  aria-pressed={isSelected}
                   className={cn(
-                    "relative h-8 w-8 rounded-full border-2 transition-all",
-                    isSelected
-                      ? "border-neutral-900 ring-1 ring-neutral-900 ring-offset-1"
-                      : "border-neutral-200 hover:border-neutral-400",
+                    "relative flex h-11 w-11 items-center justify-center rounded-full transition-all",
+                    isSelected ? "ring-2 ring-neutral-900 ring-offset-1" : "ring-1 ring-neutral-200 hover:ring-neutral-400",
                     outOfStock && "opacity-40 cursor-not-allowed"
                   )}
                   style={{ backgroundColor: colorHex ?? "#ccc" }}
