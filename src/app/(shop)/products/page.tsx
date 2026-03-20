@@ -7,7 +7,10 @@ import { ProductFilters } from "@/components/product/ProductFilters"
 import type { ProductWithRelations } from "@/types"
 import type { Metadata } from "next"
 
-export const metadata: Metadata = { title: "All Products" }
+export const metadata: Metadata = {
+  title: "All Products — Cartello",
+  description: "Shop the full Cartello menswear collection — outerwear, essentials, accessories and new arrivals.",
+}
 
 interface PageProps {
   searchParams: Promise<{
@@ -120,9 +123,9 @@ export default async function ProductsPage({ searchParams }: PageProps) {
               <a href="/products" className="mt-4 text-sm font-medium text-neutral-900 underline">Clear filters</a>
             </div>
           ) : (
-            <div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3">
+            <div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 lg:grid-cols-4">
               {products.map((product, i) => (
-                <ProductCard key={product.id} product={product} priority={i < 6} />
+                <ProductCard key={product.id} product={product} priority={i < 8} />
               ))}
             </div>
           )}
