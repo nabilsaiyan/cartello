@@ -18,7 +18,7 @@ export function StarRating({
   const sizes = { sm: "h-3.5 w-3.5", md: "h-4.5 w-4.5", lg: "h-5.5 w-5.5" }
 
   return (
-    <div className="flex items-center gap-0.5">
+    <div className="flex items-center gap-0.5" role={interactive ? undefined : "img"} aria-label={interactive ? undefined : `Rating: ${rating} out of ${max}`}>
       {Array.from({ length: max }).map((_, i) => {
         const filled = i < Math.floor(rating)
         const partial = !filled && i < rating
@@ -29,10 +29,11 @@ export function StarRating({
             type="button"
             disabled={!interactive}
             onClick={() => onRate?.(i + 1)}
+            aria-label={interactive ? `Rate ${i + 1} out of ${max}` : undefined}
             className={cn(
               "relative",
               interactive && "cursor-pointer hover:scale-110 transition-transform",
-              !interactive && "cursor-default"
+              !interactive && "cursor-default pointer-events-none"
             )}
           >
             <svg
