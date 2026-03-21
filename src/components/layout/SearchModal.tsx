@@ -36,6 +36,7 @@ export function SearchModal({ open, onClose }: Props) {
   const [query, setQuery] = useState("")
   const [results, setResults] = useState<SearchProduct[]>([])
   const [loading, setLoading] = useState(false)
+  const [searchError, setSearchError] = useState(false)
   const [activeIndex, setActiveIndex] = useState(-1)
   const debouncedQuery = useDebounce(query, 250)
 
@@ -52,12 +53,13 @@ export function SearchModal({ open, onClose }: Props) {
 
   // Fetch results
   useEffect(() => {
-    if (!debouncedQuery.trim()) { setResults([]); return }
+    if (!debouncedQuery.trim()) { setResults([]); setSearchError(false); return }
     setLoading(true)
+    setSearchError(false)
     fetch(`/api/products?q=${encodeURIComponent(debouncedQuery)}&limit=6`)
-      .then((r) => r.json())
+      .then((r) => { if (!r.ok) throw new Error(); return r.json() })
       .then((data) => setResults(data.products ?? []))
-      .catch(() => setResults([]))
+      .catch(() => { setResults([]); setSearchError(true) })
       .finally(() => setLoading(false))
   }, [debouncedQuery])
 
@@ -160,8 +162,13 @@ export function SearchModal({ open, onClose }: Props) {
                 </ul>
               )}
 
+              {/* Error state */}
+              {debouncedQuery && !loading && searchError && (
+                <p className="px-4 py-6 text-center text-sm text-neutral-400">Search failed — please try again</p>
+              )}
+
               {/* No results */}
-              {debouncedQuery && !loading && results.length === 0 && (
+              {debouncedQuery && !loading && !searchError && results.length === 0 && (
                 <p className="px-4 py-6 text-center text-sm text-neutral-400">No products found for &ldquo;{debouncedQuery}&rdquo;</p>
               )}
 
