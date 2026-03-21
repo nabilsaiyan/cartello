@@ -108,14 +108,37 @@ function ContactStep({
           className="w-full rounded-xl border border-neutral-200 px-4 py-3 text-sm outline-none focus:border-neutral-400"
         >
           <option value="">Select country</option>
-          <option value="IE">Ireland</option>
-          <option value="GB">United Kingdom</option>
-          <option value="FR">France</option>
-          <option value="DE">Germany</option>
-          <option value="ES">Spain</option>
-          <option value="IT">Italy</option>
-          <option value="NL">Netherlands</option>
-          <option value="US">United States</option>
+          <optgroup label="Europe">
+            <option value="IE">Ireland</option>
+            <option value="GB">United Kingdom</option>
+            <option value="FR">France</option>
+            <option value="DE">Germany</option>
+            <option value="ES">Spain</option>
+            <option value="IT">Italy</option>
+            <option value="NL">Netherlands</option>
+            <option value="BE">Belgium</option>
+            <option value="PT">Portugal</option>
+            <option value="SE">Sweden</option>
+            <option value="NO">Norway</option>
+            <option value="DK">Denmark</option>
+            <option value="FI">Finland</option>
+            <option value="AT">Austria</option>
+            <option value="CH">Switzerland</option>
+            <option value="PL">Poland</option>
+            <option value="CZ">Czech Republic</option>
+            <option value="GR">Greece</option>
+          </optgroup>
+          <optgroup label="North America">
+            <option value="US">United States</option>
+            <option value="CA">Canada</option>
+          </optgroup>
+          <optgroup label="Asia Pacific">
+            <option value="AU">Australia</option>
+            <option value="NZ">New Zealand</option>
+            <option value="JP">Japan</option>
+            <option value="SG">Singapore</option>
+            <option value="AE">United Arab Emirates</option>
+          </optgroup>
         </select>
         {errors.address?.country && <p className="mt-1 text-xs text-red-500">{errors.address.country.message}</p>}
       </div>
