@@ -24,10 +24,24 @@ export default function SignUpPage() {
         body: JSON.stringify(data),
       })
       const json = await res.json()
-      if (!res.ok) { toast.error(json.error ?? "Something went wrong"); return }
-      await signIn("credentials", { email: data.email, password: data.password, redirect: false })
+      if (!res.ok) {
+        if (res.status === 409) {
+          toast.error("An account with this email already exists")
+        } else {
+          toast.error(json.error ?? "Registration failed — please try again")
+        }
+        return
+      }
+      const signInRes = await signIn("credentials", { email: data.email, password: data.password, redirect: false })
+      if (signInRes?.error) {
+        toast.success("Account created! Please sign in.")
+        router.push("/auth/sign-in")
+        return
+      }
       router.push("/")
       router.refresh()
+    } catch {
+      toast.error("Something went wrong — please check your connection")
     } finally {
       setLoading(false)
     }
