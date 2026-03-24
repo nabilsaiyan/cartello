@@ -31,14 +31,23 @@ function SignInForm() {
 
   async function onSubmit(data: SignInInput) {
     setLoading(true)
-    const res = await signIn("credentials", { ...data, redirect: false })
-    setLoading(false)
-    if (res?.error) {
-      toast.error("Invalid email or password")
-      return
+    try {
+      const res = await signIn("credentials", { ...data, redirect: false })
+      if (res?.error) {
+        if (res.error === "CredentialsSignin") {
+          toast.error("Incorrect email or password")
+        } else {
+          toast.error("Sign in failed — please try again")
+        }
+        return
+      }
+      router.push(callbackUrl)
+      router.refresh()
+    } catch {
+      toast.error("Something went wrong — please check your connection")
+    } finally {
+      setLoading(false)
     }
-    router.push(callbackUrl)
-    router.refresh()
   }
 
   return (
