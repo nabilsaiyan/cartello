@@ -15,19 +15,18 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Cartello — Premium Fashion & Lifestyle",
-    template: "%s | Cartello",
+    default: "Cartello — Premium Menswear",
+    template: "%s — Cartello",
   },
-  description:
-    "Discover premium fashion and lifestyle products. Free shipping over €50.",
-  keywords: ["fashion", "lifestyle", "clothing", "premium", "accessories"],
+  description: "Premium menswear for those who appreciate quality and style. Shop outerwear, essentials, and accessories with free shipping over €50.",
+  keywords: ["menswear", "men's fashion", "premium clothing", "outerwear", "accessories", "luxury fashion"],
   openGraph: {
     type: "website",
     locale: "en_IE",
     url: process.env.NEXT_PUBLIC_APP_URL,
     siteName: "Cartello",
-    title: "Cartello — Premium Fashion & Lifestyle",
-    description: "Discover premium fashion and lifestyle products.",
+    title: "Cartello — Premium Menswear",
+    description: "Premium menswear for those who appreciate quality and style.",
   },
   twitter: { card: "summary_large_image" },
 }
