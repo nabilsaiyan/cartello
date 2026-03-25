@@ -5,6 +5,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { Minus, Plus, Heart, ShoppingBag, ChevronDown } from "lucide-react"
 import { toast } from "sonner"
+import { useSession } from "next-auth/react"
 import { useCartStore } from "@/store/cart-store"
 import { useWishlistStore } from "@/store/wishlist-store"
 import { VariantSelector } from "@/components/product/VariantSelector"
@@ -29,6 +30,7 @@ export function ProductDetailClient({ slug }: { slug: string }) {
   const [reviewRating, setReviewRating] = useState(5)
   const [submittingReview, setSubmittingReview] = useState(false)
 
+  const { data: session } = useSession()
   const addItem = useCartStore((s) => s.addItem)
   const toggle = useWishlistStore((s) => s.toggle)
   const wishlistItems = useWishlistStore((s) => s.items)
@@ -203,7 +205,16 @@ export function ProductDetailClient({ slug }: { slug: string }) {
               {inStock ? "Add to Cart" : "Sold Out"}
             </button>
             <button
-              onClick={() => toggle(product.id)}
+              onClick={() => {
+                toggle(product.id)
+                if (session?.user?.id) {
+                  fetch("/api/wishlist", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ productId: product.id }),
+                  }).catch(() => {})
+                }
+              }}
               aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
               className={`flex h-12 w-12 items-center justify-center rounded-full border transition-colors ${wishlisted ? "border-red-200 bg-red-50 text-red-500" : "border-neutral-200 hover:border-neutral-400"}`}
             >

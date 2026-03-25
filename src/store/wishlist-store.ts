@@ -7,6 +7,7 @@ import type { WishlistState } from "@/types"
 interface WishlistStore extends WishlistState {
   _hasHydrated: boolean
   setHasHydrated: (v: boolean) => void
+  setItems: (ids: string[]) => void
 }
 
 export const useWishlistStore = create<WishlistStore>()(
@@ -17,6 +18,10 @@ export const useWishlistStore = create<WishlistStore>()(
 
       setHasHydrated(v) {
         set({ _hasHydrated: v })
+      },
+
+      setItems(ids) {
+        set({ items: ids })
       },
 
       toggle(productId) {

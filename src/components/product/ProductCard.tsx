@@ -5,6 +5,7 @@ import Link from "next/link"
 import { Heart, ShoppingBag } from "lucide-react"
 import { motion } from "framer-motion"
 import { toast } from "sonner"
+import { useSession } from "next-auth/react"
 import { Badge } from "@/components/ui/Badge"
 import { StarRating } from "@/components/ui/StarRating"
 import { useCartStore } from "@/store/cart-store"
@@ -18,11 +19,25 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product, priority = false }: ProductCardProps) {
+  const { data: session } = useSession()
   const addItem = useCartStore((s) => s.addItem)
   const toggle = useWishlistStore((s) => s.toggle)
   const wishlistItems = useWishlistStore((s) => s.items)
   const wishlistHydrated = useWishlistStore((s) => s._hasHydrated)
   const wishlisted = wishlistHydrated && wishlistItems.includes(product.id)
+
+  function handleWishlistToggle(e: React.MouseEvent) {
+    e.preventDefault()
+    e.stopPropagation()
+    toggle(product.id)
+    if (session?.user?.id) {
+      fetch("/api/wishlist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ productId: product.id }),
+      }).catch(() => {})
+    }
+  }
 
   const avgRating =
     product.reviews.length > 0
@@ -97,11 +112,8 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
             Quick Add
           </button>
           <button
-            onClick={(e) => {
-              e.preventDefault()
-              e.stopPropagation()
-              toggle(product.id)
-            }}
+            onClick={handleWishlistToggle}
+            aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
             className="flex h-9 w-9 items-center justify-center rounded-full bg-white/95 shadow backdrop-blur-sm transition-colors hover:bg-neutral-900 hover:text-white"
           >
             <Heart
