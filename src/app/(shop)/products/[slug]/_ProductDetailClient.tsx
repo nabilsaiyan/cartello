@@ -31,7 +31,7 @@ export function ProductDetailClient({ slug }: { slug: string }) {
 
   const addItem = useCartStore((s) => s.addItem)
   const toggle = useWishlistStore((s) => s.toggle)
-  const has = useWishlistStore((s) => s.has)
+  const wishlistItems = useWishlistStore((s) => s.items)
   const wishlistHydrated = useWishlistStore((s) => s._hasHydrated)
 
   useEffect(() => {
@@ -67,7 +67,7 @@ export function ProductDetailClient({ slug }: { slug: string }) {
     </div>
   )
 
-  const wishlisted = wishlistHydrated && has(product.id)
+  const wishlisted = wishlistHydrated && wishlistItems.includes(product.id)
   const price = selectedVariant?.price ?? product.price
   const isSale = product.comparePrice && product.comparePrice > product.price
   const inStock = selectedVariant ? selectedVariant.stock > 0 : true

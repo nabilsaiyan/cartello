@@ -20,9 +20,9 @@ interface ProductCardProps {
 export function ProductCard({ product, priority = false }: ProductCardProps) {
   const addItem = useCartStore((s) => s.addItem)
   const toggle = useWishlistStore((s) => s.toggle)
-  const has = useWishlistStore((s) => s.has)
+  const wishlistItems = useWishlistStore((s) => s.items)
   const wishlistHydrated = useWishlistStore((s) => s._hasHydrated)
-  const wishlisted = wishlistHydrated && has(product.id)
+  const wishlisted = wishlistHydrated && wishlistItems.includes(product.id)
 
   const avgRating =
     product.reviews.length > 0
