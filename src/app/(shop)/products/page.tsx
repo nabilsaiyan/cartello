@@ -89,12 +89,21 @@ export default async function ProductsPage({ searchParams }: PageProps) {
   }
 
   return (
-    <div className="mx-auto max-w-7xl px-4 pt-6 pb-16 sm:px-6 lg:px-8">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-neutral-900">
-          {params.q ? `Results for "${params.q}"` : params.category ? categories.find(c => c.slug === params.category)?.name ?? "Products" : "All Products"}
-        </h1>
-        <p className="mt-1 text-sm text-neutral-500">{total} products</p>
+    <div className="mx-auto max-w-7xl px-4 pt-4 pb-16 sm:px-6 lg:px-8">
+      {/* Single compact header — title + sort in one row */}
+      <div className="mb-5 flex items-center justify-between">
+        <div>
+          <h1 className="text-xl font-bold text-neutral-900">
+            {params.q ? `Results for "${params.q}"` : params.category ? categories.find(c => c.slug === params.category)?.name ?? "Products" : "All Products"}
+          </h1>
+          <p className="text-xs text-neutral-400">{total} product{total !== 1 ? "s" : ""}</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="hidden text-sm text-neutral-500 sm:inline">Sort:</span>
+          <Suspense fallback={null}>
+            <SortSelect currentSort={params.sort} />
+          </Suspense>
+        </div>
       </div>
 
       <div className="flex gap-8">
@@ -104,17 +113,6 @@ export default async function ProductsPage({ searchParams }: PageProps) {
 
         {/* Product grid */}
         <div className="flex-1">
-          <div className="mb-6 flex items-center justify-between">
-            <p className="text-sm text-neutral-500">
-              {total === 0 ? "0 products" : `Showing ${Math.min((page - 1) * 12 + 1, total)}–${Math.min(page * 12, total)} of ${total}`}
-            </p>
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-neutral-500">Sort:</span>
-              <Suspense fallback={null}>
-                <SortSelect currentSort={params.sort} />
-              </Suspense>
-            </div>
-          </div>
 
           {products.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-24 text-center">
