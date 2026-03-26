@@ -40,7 +40,7 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
             initial={{ x: "100%" }}
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
-            transition={{ type: "spring", damping: 30, stiffness: 300 }}
+            transition={{ type: "tween", duration: 0.3, ease: [0.32, 0.72, 0, 1] }}
             className="fixed inset-y-0 right-0 z-50 flex w-full max-w-md flex-col bg-white shadow-2xl"
           >
             {/* Header */}
