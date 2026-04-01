@@ -51,16 +51,16 @@ export default function SignUpPage() {
     <div className="flex min-h-screen items-center justify-center px-4">
       <div className="w-full max-w-sm">
         <div className="text-center">
-          <Link href="/" className="text-2xl font-bold text-neutral-900">cartello</Link>
+          <Link href="/" className="font-display text-3xl uppercase tracking-[0.2em] text-neutral-900">cartello</Link>
           <h1 className="mt-6 text-2xl font-semibold text-neutral-900">Create your account</h1>
           <p className="mt-2 text-sm text-neutral-500">Join Cartello and start shopping</p>
         </div>
 
         <div className="mt-8 space-y-3">
-          <button onClick={() => signIn("github", { callbackUrl: "/" })} className="flex w-full items-center justify-center gap-3 rounded-full border border-neutral-200 px-4 py-3 text-sm font-medium text-neutral-700 hover:bg-neutral-50">
+          <button onClick={() => signIn("github", { callbackUrl: "/" })} className="flex w-full items-center justify-center gap-3 rounded-full border border-neutral-300 px-4 py-3 text-sm font-medium text-neutral-700 hover:bg-neutral-50">
             <GithubIcon />Continue with GitHub
           </button>
-          <button onClick={() => signIn("google", { callbackUrl: "/" })} className="flex w-full items-center justify-center gap-3 rounded-full border border-neutral-200 px-4 py-3 text-sm font-medium text-neutral-700 hover:bg-neutral-50">
+          <button onClick={() => signIn("google", { callbackUrl: "/" })} className="flex w-full items-center justify-center gap-3 rounded-full border border-neutral-300 px-4 py-3 text-sm font-medium text-neutral-700 hover:bg-neutral-50">
             <GoogleIcon />Continue with Google
           </button>
         </div>
@@ -73,17 +73,17 @@ export default function SignUpPage() {
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div>
             <label className="mb-1.5 block text-sm font-medium text-neutral-700">Full name</label>
-            <input type="text" placeholder="John Doe" {...register("name")} className="w-full rounded-xl border border-neutral-200 px-4 py-3 text-sm outline-none focus:border-neutral-400" />
+            <input type="text" placeholder="John Doe" {...register("name")} className="w-full rounded-xl border border-neutral-300 px-4 py-3 text-sm outline-none focus:border-neutral-400" />
             {errors.name && <p className="mt-1 text-xs text-red-500">{errors.name.message}</p>}
           </div>
           <div>
             <label className="mb-1.5 block text-sm font-medium text-neutral-700">Email</label>
-            <input type="email" placeholder="you@example.com" {...register("email")} className="w-full rounded-xl border border-neutral-200 px-4 py-3 text-sm outline-none focus:border-neutral-400" />
+            <input type="email" placeholder="you@example.com" {...register("email")} className="w-full rounded-xl border border-neutral-300 px-4 py-3 text-sm outline-none focus:border-neutral-400" />
             {errors.email && <p className="mt-1 text-xs text-red-500">{errors.email.message}</p>}
           </div>
           <div>
             <label className="mb-1.5 block text-sm font-medium text-neutral-700">Password</label>
-            <input type="password" placeholder="••••••••" {...register("password")} className="w-full rounded-xl border border-neutral-200 px-4 py-3 text-sm outline-none focus:border-neutral-400" />
+            <input type="password" placeholder="••••••••" {...register("password")} className="w-full rounded-xl border border-neutral-300 px-4 py-3 text-sm outline-none focus:border-neutral-400" />
             {errors.password && <p className="mt-1 text-xs text-red-500">{errors.password.message}</p>}
           </div>
           <button type="submit" disabled={loading} className="w-full rounded-full bg-neutral-900 py-3 text-sm font-semibold text-white hover:bg-neutral-700 disabled:opacity-50">
