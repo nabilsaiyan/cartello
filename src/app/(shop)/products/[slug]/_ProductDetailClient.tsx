@@ -146,7 +146,7 @@ export function ProductDetailClient({ slug }: { slug: string }) {
             <Link href={`/category/${product.category.slug}`} className="text-xs font-semibold uppercase tracking-widest text-neutral-400 hover:text-neutral-700">
               {product.category.name}
             </Link>
-            <h1 className="mt-2 text-3xl font-bold text-neutral-900">{product.name}</h1>
+            <h1 className="mt-2 font-display text-4xl font-light text-neutral-900">{product.name}</h1>
 
             {avgRating > 0 && (
               <div className="mt-3 flex items-center gap-2">
@@ -187,7 +187,7 @@ export function ProductDetailClient({ slug }: { slug: string }) {
           )}
 
           <div className="mt-6 flex gap-3">
-            <div className="flex items-center gap-1 rounded-full border border-neutral-200 px-3">
+            <div className="flex items-center gap-1 rounded-full border border-neutral-300 px-3">
               <button onClick={() => setQuantity(Math.max(1, quantity - 1))} aria-label="Decrease quantity" className="p-2 text-neutral-500 hover:text-neutral-900">
                 <Minus className="h-4 w-4" />
               </button>
@@ -216,7 +216,7 @@ export function ProductDetailClient({ slug }: { slug: string }) {
                 }
               }}
               aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
-              className={`flex h-12 w-12 items-center justify-center rounded-full border transition-colors ${wishlisted ? "border-red-200 bg-red-50 text-red-500" : "border-neutral-200 hover:border-neutral-400"}`}
+              className={`flex h-12 w-12 items-center justify-center rounded-full border transition-colors ${wishlisted ? "border-red-200 bg-red-50 text-red-500" : "border-neutral-300 hover:border-neutral-400"}`}
             >
               <Heart className={`h-5 w-5 ${wishlisted ? "fill-current" : ""}`} />
             </button>
@@ -246,7 +246,7 @@ export function ProductDetailClient({ slug }: { slug: string }) {
       <section className="mt-20 border-t border-neutral-100 pt-12">
         <div className="flex items-end justify-between mb-8">
           <div>
-            <h2 className="text-xl font-bold text-neutral-900">Customer Reviews</h2>
+            <h2 className="font-display text-2xl font-light text-neutral-900">Customer Reviews</h2>
             {avgRating > 0 && (
               <div className="mt-2 flex items-center gap-2">
                 <StarRating rating={avgRating} size="lg" />
@@ -296,7 +296,7 @@ export function ProductDetailClient({ slug }: { slug: string }) {
                   onChange={(e) => setReviewText(e.target.value)}
                   rows={4}
                   required
-                  className="w-full rounded-xl border border-neutral-200 px-4 py-3 text-sm outline-none focus:border-neutral-400"
+                  className="w-full rounded-xl border border-neutral-300 px-4 py-3 text-sm outline-none focus:border-neutral-400"
                   placeholder="Share your experience…"
                 />
               </div>
@@ -314,7 +314,7 @@ export function ProductDetailClient({ slug }: { slug: string }) {
 
       {related.length > 0 && (
         <section className="mt-20 border-t border-neutral-100 pt-12">
-          <h2 className="mb-8 text-xl font-bold text-neutral-900">You May Also Like</h2>
+          <h2 className="mb-8 font-display text-2xl font-light text-neutral-900">You May Also Like</h2>
           <div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-4">
             {related.map((p) => <ProductCard key={p.id} product={p} />)}
           </div>

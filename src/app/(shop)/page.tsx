@@ -1,3 +1,4 @@
+import Image from "next/image"
 import Link from "next/link"
 import { ArrowRight } from "lucide-react"
 import { prisma } from "@/lib/prisma"
@@ -40,10 +41,10 @@ async function getNewArrivals(): Promise<ProductWithRelations[]> {
 }
 
 const categories = [
-  { name: "Women", slug: "women", bg: "bg-stone-100", label: "Shop Women →" },
-  { name: "Men", slug: "men", bg: "bg-slate-100", label: "Shop Men →" },
-  { name: "Accessories", slug: "accessories", bg: "bg-amber-50", label: "Shop Accessories →" },
-  { name: "New Arrivals", slug: "new-arrivals", bg: "bg-rose-50", label: "New In →" },
+  { name: "Men", slug: "men", image: "/cat-men.png", label: "Shop Men" },
+  { name: "Outerwear", slug: "outerwear", image: "/cat-outerwear.png", label: "Shop Outerwear" },
+  { name: "Accessories", slug: "accessories", image: "/cat-accessories.png", label: "Shop Accessories" },
+  { name: "New Arrivals", slug: "new-arrivals", image: "/cat-new-arrivals.png", label: "New In" },
 ]
 
 const marqueeItems = [
@@ -60,47 +61,76 @@ export default async function HomePage() {
   return (
     <div>
       {/* Hero */}
-      <section className="relative flex min-h-[92vh] items-center justify-center overflow-hidden bg-neutral-950">
-        <div className="absolute inset-0 bg-gradient-to-br from-neutral-900 via-neutral-950 to-black" />
-        <div className="absolute inset-0 opacity-20"
-          style={{ backgroundImage: "radial-gradient(circle at 20% 50%, #c8a96e33 0%, transparent 50%), radial-gradient(circle at 80% 20%, #ffffff11 0%, transparent 40%)" }}
+      <section className="relative flex min-h-screen items-center overflow-hidden bg-neutral-950">
+        {/* Background image */}
+        <Image
+          src="/hero.png"
+          alt=""
+          fill
+          className="object-cover object-right"
+          priority
+          quality={90}
         />
-        <div className="relative z-10 mx-auto max-w-4xl px-4 text-center">
-          <p className="mb-5 text-xs font-semibold uppercase tracking-[0.25em] text-neutral-400">
-            New Collection · Summer 2025
-          </p>
-          <h1 className="text-6xl font-bold leading-[1.05] tracking-tight text-white sm:text-8xl">
-            Wear What
-            <br />
-            <em className="not-italic text-neutral-300">You Love</em>
-          </h1>
-          <p className="mx-auto mt-6 max-w-lg text-lg leading-relaxed text-neutral-400">
-            Curated premium fashion for those who appreciate quality,
-            style, and conscious craftsmanship.
-          </p>
-          <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-            <Link
-              href="/products"
-              className="flex items-center gap-2 rounded-full bg-white px-8 py-3.5 text-sm font-semibold text-neutral-900 transition-all hover:bg-neutral-100 hover:gap-3"
-            >
-              Shop Now <ArrowRight className="h-4 w-4" />
-            </Link>
-            <Link
-              href="/category/new-arrivals"
-              className="rounded-full border border-white/20 px-8 py-3.5 text-sm font-semibold text-white transition-colors hover:border-white/40 hover:bg-white/10"
-            >
-              New Arrivals
-            </Link>
+        {/* Gradient overlay — dark left for text, fades right to reveal the figure */}
+        <div className="absolute inset-0 bg-gradient-to-r from-black via-black/80 to-black/10" />
+
+        {/* Content */}
+        <div className="relative z-10 mx-auto w-full max-w-7xl px-6 py-24 sm:px-8 lg:px-12">
+          <div className="max-w-2xl">
+            {/* Collection label */}
+            <div className="mb-10 flex items-center gap-4">
+              <span className="h-px w-10 bg-[#c8a96e]" />
+              <span className="text-[11px] font-medium uppercase tracking-[0.3em] text-[#c8a96e]">
+                New Collection · SS 2025
+              </span>
+            </div>
+
+            {/* Heading */}
+            <h1 className="font-display text-[clamp(4rem,10vw,9rem)] font-light leading-[0.92] text-white">
+              Wear<br />
+              What<br />
+              <em className="italic text-neutral-400">You Love</em>
+            </h1>
+
+            {/* Body */}
+            <p className="mt-10 max-w-sm text-base leading-relaxed text-neutral-500">
+              Curated premium menswear for those who appreciate quality, style, and conscious craftsmanship.
+            </p>
+
+            {/* CTAs */}
+            <div className="mt-12 flex items-center gap-8">
+              <Link
+                href="/products"
+                className="flex items-center gap-2.5 rounded-full bg-white px-8 py-3.5 text-sm font-semibold text-neutral-900 transition-all hover:bg-neutral-100 hover:gap-3.5"
+              >
+                Shop Now <ArrowRight className="h-4 w-4" />
+              </Link>
+              <Link
+                href="/category/new-arrivals"
+                className="flex items-center gap-2 text-sm font-medium text-neutral-400 transition-colors hover:text-white"
+              >
+                New Arrivals <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+            </div>
+          </div>
+
+          {/* Bottom scroll hint */}
+          <div className="absolute bottom-10 right-8 hidden flex-col items-center gap-2 sm:flex">
+            <span className="text-[10px] uppercase tracking-[0.25em] text-neutral-600">Scroll</span>
+            <span className="h-8 w-px bg-gradient-to-b from-neutral-600 to-transparent" />
           </div>
         </div>
       </section>
 
       {/* Marquee */}
-      <div className="overflow-hidden border-y border-neutral-100 bg-neutral-50 py-3">
-        <div className="flex animate-[marquee_25s_linear_infinite] whitespace-nowrap">
-          {[...marqueeItems, ...marqueeItems].map((item, i) => (
-            <span key={i} className="mx-8 text-xs font-medium uppercase tracking-widest text-neutral-400">
-              {item} <span className="mx-6 text-neutral-300">·</span>
+      <div className="overflow-hidden border-y border-neutral-100 bg-[#faf8f5] py-3.5">
+        <div
+          className="flex w-max animate-[marquee_25s_linear_infinite]"
+          style={{ willChange: "transform" }}
+        >
+          {Array.from({ length: 4 }, () => marqueeItems).flat().map((item, i) => (
+            <span key={i} className="mx-10 flex-shrink-0 text-[11px] font-medium uppercase tracking-[0.15em] text-neutral-500">
+              {item} <span className="mx-4 text-[#c8a96e]">·</span>
             </span>
           ))}
         </div>
@@ -111,7 +141,7 @@ export default async function HomePage() {
         <div className="flex items-end justify-between mb-8">
           <div>
             <p className="text-xs font-semibold uppercase tracking-widest text-neutral-400">Browse</p>
-            <h2 className="mt-1 text-2xl font-bold text-neutral-900">Shop by Category</h2>
+            <h2 className="mt-1 font-display text-3xl font-light text-neutral-900">Shop by Category</h2>
           </div>
         </div>
         <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
@@ -119,12 +149,21 @@ export default async function HomePage() {
             <Link
               key={cat.slug}
               href={`/category/${cat.slug}`}
-              className={`${cat.bg} group relative flex aspect-[4/5] flex-col justify-end overflow-hidden rounded-2xl p-5 transition-transform hover:-translate-y-1`}
+              className="group relative flex aspect-[4/5] flex-col justify-end overflow-hidden rounded-2xl"
             >
-              <div>
-                <p className="font-semibold text-neutral-900">{cat.name}</p>
-                <p className="mt-0.5 text-xs text-neutral-500 transition-all group-hover:text-neutral-700">
-                  {cat.label}
+              <Image
+                src={cat.image}
+                alt={cat.name}
+                fill
+                className="object-cover transition-transform duration-700 group-hover:scale-105"
+                sizes="(max-width: 768px) 50vw, 25vw"
+              />
+              {/* Gradient overlay — dark at bottom for text */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+              <div className="relative z-10 p-5">
+                <p className="font-semibold text-white">{cat.name}</p>
+                <p className="mt-0.5 flex items-center gap-1.5 text-xs text-white/60 transition-all group-hover:gap-2.5 group-hover:text-white/90">
+                  {cat.label} <ArrowRight className="h-3 w-3" />
                 </p>
               </div>
             </Link>
@@ -138,7 +177,7 @@ export default async function HomePage() {
           <div className="flex items-end justify-between mb-8">
             <div>
               <p className="text-xs font-semibold uppercase tracking-widest text-neutral-400">Handpicked</p>
-              <h2 className="mt-1 text-2xl font-bold text-neutral-900">Featured Pieces</h2>
+              <h2 className="mt-1 font-display text-3xl font-light text-neutral-900">Featured Pieces</h2>
             </div>
             <Link href="/products" className="text-sm font-medium text-neutral-500 hover:text-neutral-900">
               View all →
@@ -157,7 +196,7 @@ export default async function HomePage() {
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-8 px-8 py-16 text-center md:flex-row md:text-left">
           <div>
             <p className="text-xs font-semibold uppercase tracking-widest text-neutral-400">Limited time</p>
-            <h2 className="mt-2 text-3xl font-bold text-white">Up to 30% off sale items</h2>
+            <h2 className="mt-2 font-display text-4xl font-light text-white">Up to 30% off sale items</h2>
             <p className="mt-2 text-neutral-400">New markdowns added. While stocks last.</p>
           </div>
           <Link
@@ -175,7 +214,7 @@ export default async function HomePage() {
           <div className="flex items-end justify-between mb-8">
             <div>
               <p className="text-xs font-semibold uppercase tracking-widest text-neutral-400">Just dropped</p>
-              <h2 className="mt-1 text-2xl font-bold text-neutral-900">New Arrivals</h2>
+              <h2 className="mt-1 font-display text-3xl font-light text-neutral-900">New Arrivals</h2>
             </div>
             <Link href="/category/new-arrivals" className="text-sm font-medium text-neutral-500 hover:text-neutral-900">
               See all →

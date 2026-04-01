@@ -96,7 +96,11 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
         {/* Badges */}
         <div className="absolute left-3 top-3 flex flex-col gap-1.5">
           {isNew && <Badge variant="new">New</Badge>}
-          {isSale && <Badge variant="sale">Sale</Badge>}
+          {isSale && (
+            <Badge variant="sale">
+              −{Math.round((1 - product.price / product.comparePrice!) * 100)}%
+            </Badge>
+          )}
           {defaultVariant && defaultVariant.stock === 0 && (
             <Badge variant="sold-out">Sold out</Badge>
           )}
@@ -125,8 +129,8 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
 
       {/* Info */}
       <div className="mt-3 space-y-1">
-        <p className="text-xs text-neutral-400">{product.category.name}</p>
-        <h3 className="text-sm font-medium text-neutral-900 group-hover:underline line-clamp-1">
+        <p className="text-[10px] uppercase tracking-[0.12em] text-neutral-400">{product.category.name}</p>
+        <h3 className="text-sm font-medium text-neutral-900 line-clamp-1 transition-opacity group-hover:opacity-60">
           {product.name}
         </h3>
         {avgRating > 0 && (
@@ -136,13 +140,16 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
           </div>
         )}
         <div className="flex items-center gap-2">
-          <span className="text-sm font-semibold text-neutral-900">
+          <span className={`text-sm font-semibold ${isSale ? "text-[#c8a96e]" : "text-neutral-900"}`}>
             {formatPrice(product.price)}
           </span>
           {isSale && (
-            <span className="text-xs text-neutral-400 line-through">
-              {formatPrice(product.comparePrice!)}
-            </span>
+            <>
+              <span className="text-xs text-neutral-400 line-through">{formatPrice(product.comparePrice!)}</span>
+              <span className="text-[10px] font-medium text-[#c8a96e]">
+                −{Math.round((1 - product.price / product.comparePrice!) * 100)}%
+              </span>
+            </>
           )}
         </div>
       </div>

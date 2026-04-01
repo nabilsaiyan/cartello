@@ -93,7 +93,7 @@ export default async function ProductsPage({ searchParams }: PageProps) {
       {/* Single compact header — title + sort in one row */}
       <div className="mb-5 flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-bold text-neutral-900">
+          <h1 className="font-display text-2xl font-light text-neutral-900">
             {params.q ? `Results for "${params.q}"` : params.category ? categories.find(c => c.slug === params.category)?.name ?? "Products" : "All Products"}
           </h1>
           <p className="text-xs text-neutral-400">{total} product{total !== 1 ? "s" : ""}</p>
@@ -131,18 +131,18 @@ export default async function ProductsPage({ searchParams }: PageProps) {
           {pages > 1 && (
             <div className="mt-12 flex items-center justify-center gap-2">
               {page > 1 && (
-                <a href={buildUrl({ page: String(page - 1) })} className="rounded-full border border-neutral-200 px-4 py-2 text-sm hover:bg-neutral-50">← Prev</a>
+                <a href={buildUrl({ page: String(page - 1) })} className="rounded-full border border-neutral-300 px-4 py-2 text-sm hover:bg-neutral-50">← Prev</a>
               )}
               {Array.from({ length: Math.min(pages, 7) }).map((_, i) => {
                 const p = i + 1
                 return (
-                  <a key={p} href={buildUrl({ page: String(p) })} className={`flex h-9 w-9 items-center justify-center rounded-full text-sm ${p === page ? "bg-neutral-900 text-white" : "border border-neutral-200 hover:bg-neutral-50"}`}>
+                  <a key={p} href={buildUrl({ page: String(p) })} className={`flex h-9 w-9 items-center justify-center rounded-full text-sm ${p === page ? "bg-neutral-900 text-white" : "border border-neutral-300 hover:bg-neutral-50"}`}>
                     {p}
                   </a>
                 )
               })}
               {page < pages && (
-                <a href={buildUrl({ page: String(page + 1) })} className="rounded-full border border-neutral-200 px-4 py-2 text-sm hover:bg-neutral-50">Next →</a>
+                <a href={buildUrl({ page: String(page + 1) })} className="rounded-full border border-neutral-300 px-4 py-2 text-sm hover:bg-neutral-50">Next →</a>
               )}
             </div>
           )}
