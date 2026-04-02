@@ -44,7 +44,7 @@ function ContactStep({
           type="email"
           placeholder="Email address"
           {...register("email")}
-          className="w-full rounded-xl border border-neutral-200 px-4 py-3 text-sm outline-none focus:border-neutral-400"
+          className="w-full rounded-xl border border-neutral-300 px-4 py-3 text-sm outline-none focus:border-neutral-400"
         />
         {errors.email && <p className="mt-1 text-xs text-red-500">{errors.email.message}</p>}
       </div>
@@ -54,7 +54,7 @@ function ContactStep({
           <input
             placeholder="First name"
             {...register("address.firstName")}
-            className="w-full rounded-xl border border-neutral-200 px-4 py-3 text-sm outline-none focus:border-neutral-400"
+            className="w-full rounded-xl border border-neutral-300 px-4 py-3 text-sm outline-none focus:border-neutral-400"
           />
           {errors.address?.firstName && <p className="mt-1 text-xs text-red-500">{errors.address.firstName.message}</p>}
         </div>
@@ -62,7 +62,7 @@ function ContactStep({
           <input
             placeholder="Last name"
             {...register("address.lastName")}
-            className="w-full rounded-xl border border-neutral-200 px-4 py-3 text-sm outline-none focus:border-neutral-400"
+            className="w-full rounded-xl border border-neutral-300 px-4 py-3 text-sm outline-none focus:border-neutral-400"
           />
           {errors.address?.lastName && <p className="mt-1 text-xs text-red-500">{errors.address.lastName.message}</p>}
         </div>
@@ -72,7 +72,7 @@ function ContactStep({
         <input
           placeholder="Address line 1"
           {...register("address.address1")}
-          className="w-full rounded-xl border border-neutral-200 px-4 py-3 text-sm outline-none focus:border-neutral-400"
+          className="w-full rounded-xl border border-neutral-300 px-4 py-3 text-sm outline-none focus:border-neutral-400"
         />
         {errors.address?.address1 && <p className="mt-1 text-xs text-red-500">{errors.address.address1.message}</p>}
       </div>
@@ -80,7 +80,7 @@ function ContactStep({
       <input
         placeholder="Address line 2 (optional)"
         {...register("address.address2")}
-        className="w-full rounded-xl border border-neutral-200 px-4 py-3 text-sm outline-none focus:border-neutral-400"
+        className="w-full rounded-xl border border-neutral-300 px-4 py-3 text-sm outline-none focus:border-neutral-400"
       />
 
       <div className="grid grid-cols-2 gap-3">
@@ -88,7 +88,7 @@ function ContactStep({
           <input
             placeholder="City"
             {...register("address.city")}
-            className="w-full rounded-xl border border-neutral-200 px-4 py-3 text-sm outline-none focus:border-neutral-400"
+            className="w-full rounded-xl border border-neutral-300 px-4 py-3 text-sm outline-none focus:border-neutral-400"
           />
           {errors.address?.city && <p className="mt-1 text-xs text-red-500">{errors.address.city.message}</p>}
         </div>
@@ -96,7 +96,7 @@ function ContactStep({
           <input
             placeholder="Postal code"
             {...register("address.postalCode")}
-            className="w-full rounded-xl border border-neutral-200 px-4 py-3 text-sm outline-none focus:border-neutral-400"
+            className="w-full rounded-xl border border-neutral-300 px-4 py-3 text-sm outline-none focus:border-neutral-400"
           />
           {errors.address?.postalCode && <p className="mt-1 text-xs text-red-500">{errors.address.postalCode.message}</p>}
         </div>
@@ -105,7 +105,7 @@ function ContactStep({
       <div>
         <select
           {...register("address.country")}
-          className="w-full rounded-xl border border-neutral-200 px-4 py-3 text-sm outline-none focus:border-neutral-400"
+          className="w-full rounded-xl border border-neutral-300 px-4 py-3 text-sm outline-none focus:border-neutral-400"
         >
           <option value="">Select country</option>
           <optgroup label="Europe">
@@ -178,7 +178,7 @@ function ShippingStep({
           type="button"
           onClick={() => onSelect(m)}
           className={`flex w-full items-center justify-between rounded-2xl border p-4 text-sm transition-all ${
-            shippingMethod === m ? "border-neutral-900 bg-neutral-50" : "border-neutral-200"
+            shippingMethod === m ? "border-neutral-900 bg-neutral-50" : "border-neutral-300"
           }`}
         >
           <p className="font-medium text-neutral-900">{SHIPPING_RATES[m].label}</p>
@@ -193,7 +193,7 @@ function ShippingStep({
         <button
           type="button"
           onClick={onBack}
-          className="flex-1 rounded-full border border-neutral-200 py-3 text-sm font-medium text-neutral-700 hover:bg-neutral-50"
+          className="flex-1 rounded-full border border-neutral-300 py-3 text-sm font-medium text-neutral-700 hover:bg-neutral-50"
         >
           Back
         </button>
@@ -275,7 +275,7 @@ function StripeForm({
         <button
           type="button"
           onClick={onBack}
-          className="flex-1 rounded-full border border-neutral-200 py-3 text-sm font-medium text-neutral-700 hover:bg-neutral-50"
+          className="flex-1 rounded-full border border-neutral-300 py-3 text-sm font-medium text-neutral-700 hover:bg-neutral-50"
         >
           Back
         </button>

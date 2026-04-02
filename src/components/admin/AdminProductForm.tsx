@@ -49,7 +49,7 @@ export function AdminProductForm({ categories, product }: Props) {
     }
   }
 
-  const inputCls = "w-full rounded-xl border border-neutral-200 px-3 py-2.5 text-sm focus:border-neutral-400 focus:outline-none"
+  const inputCls = "w-full rounded-xl border border-neutral-300 px-3 py-2.5 text-sm focus:border-neutral-400 focus:outline-none"
   const labelCls = "mb-1.5 block text-sm font-medium text-neutral-700"
 
   return (
@@ -113,7 +113,7 @@ export function AdminProductForm({ categories, product }: Props) {
         <button type="submit" disabled={saving} className="rounded-full bg-neutral-900 px-6 py-2.5 text-sm font-semibold text-white hover:bg-neutral-700 disabled:opacity-50">
           {saving ? "Saving…" : product?.id ? "Save Changes" : "Create Product"}
         </button>
-        <button type="button" onClick={() => router.back()} className="rounded-full border border-neutral-200 px-6 py-2.5 text-sm font-medium text-neutral-700 hover:bg-neutral-50">
+        <button type="button" onClick={() => router.back()} className="rounded-full border border-neutral-300 px-6 py-2.5 text-sm font-medium text-neutral-700 hover:bg-neutral-50">
           Cancel
         </button>
       </div>

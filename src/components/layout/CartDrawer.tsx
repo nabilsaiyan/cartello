@@ -144,7 +144,7 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
                             </button>
                           </div>
                           <div className="mt-auto flex items-center justify-between">
-                            <div className="flex items-center gap-2 rounded-full border border-neutral-200 px-2">
+                            <div className="flex items-center gap-2 rounded-full border border-neutral-300 px-2">
                               <button
                                 onClick={() =>
                                   updateQuantity(item.productId, item.variantId, item.quantity - 1)
@@ -194,7 +194,7 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
                   <Link
                     href="/cart"
                     onClick={onClose}
-                    className="block w-full rounded-full border border-neutral-200 py-3 text-center text-sm font-medium text-neutral-700 transition-colors hover:bg-neutral-50"
+                    className="block w-full rounded-full border border-neutral-300 py-3 text-center text-sm font-medium text-neutral-700 transition-colors hover:bg-neutral-50"
                   >
                     View Cart
                   </Link>

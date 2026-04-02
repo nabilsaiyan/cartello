@@ -53,7 +53,7 @@ export default async function OrdersPage() {
                   <span className="font-bold text-neutral-900">{formatPrice(order.total)}</span>
                   <Link
                     href={`/account/orders/${order.id}`}
-                    className="rounded-full border border-neutral-200 px-4 py-1.5 text-xs font-medium hover:bg-neutral-50"
+                    className="rounded-full border border-neutral-300 px-4 py-1.5 text-xs font-medium hover:bg-neutral-50"
                   >
                     View Details
                   </Link>

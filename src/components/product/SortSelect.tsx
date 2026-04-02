@@ -22,7 +22,7 @@ export function SortSelect({ currentSort }: { currentSort?: string }) {
 
   return (
     <select
-      className="rounded-lg border border-neutral-200 px-3 py-1.5 text-sm focus:outline-none"
+      className="rounded-lg border border-neutral-300 px-3 py-1.5 text-sm focus:outline-none"
       defaultValue={currentSort ?? "newest"}
       onChange={handleChange}
     >

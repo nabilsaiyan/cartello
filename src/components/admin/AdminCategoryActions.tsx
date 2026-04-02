@@ -42,7 +42,7 @@ export function AdminCategoryActions({ category }: { category: Category }) {
         <input
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="rounded-lg border border-neutral-200 px-2.5 py-1 text-sm focus:outline-none"
+          className="rounded-lg border border-neutral-300 px-2.5 py-1 text-sm focus:outline-none"
           autoFocus
         />
         <button onClick={handleSave} disabled={saving} className="rounded-lg p-1.5 hover:bg-green-50">

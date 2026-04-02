@@ -39,7 +39,7 @@ export default async function SearchPage({ searchParams }: PageProps) {
             defaultValue={q}
             placeholder="Search products…"
             autoFocus
-            className="flex-1 rounded-full border border-neutral-200 px-5 py-3 text-sm outline-none focus:border-neutral-400"
+            className="flex-1 rounded-full border border-neutral-300 px-5 py-3 text-sm outline-none focus:border-neutral-400"
           />
           <button
             type="submit"

@@ -36,7 +36,7 @@ export default async function CheckoutSuccessPage({
         )}
         <Link
           href="/products"
-          className="rounded-full border border-neutral-200 px-6 py-3 text-sm font-medium text-neutral-700 hover:bg-neutral-50"
+          className="rounded-full border border-neutral-300 px-6 py-3 text-sm font-medium text-neutral-700 hover:bg-neutral-50"
         >
           Continue Shopping
         </Link>

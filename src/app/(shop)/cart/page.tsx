@@ -107,7 +107,7 @@ export default function CartPage() {
                       </span>
                     </div>
                     <div className="mt-auto flex items-center justify-between">
-                      <div className="flex items-center gap-2 rounded-full border border-neutral-200 px-2">
+                      <div className="flex items-center gap-2 rounded-full border border-neutral-300 px-2">
                         <button
                           onClick={() => updateQuantity(item.productId, item.variantId, item.quantity - 1)}
                           className="p-1.5 text-neutral-500 hover:text-neutral-900"
@@ -166,7 +166,7 @@ export default function CartPage() {
               </Link>
               <Link
                 href="/products"
-                className="block w-full rounded-full border border-neutral-200 py-3 text-center text-sm font-medium text-neutral-700 hover:bg-neutral-50"
+                className="block w-full rounded-full border border-neutral-300 py-3 text-center text-sm font-medium text-neutral-700 hover:bg-neutral-50"
               >
                 Continue Shopping
               </Link>

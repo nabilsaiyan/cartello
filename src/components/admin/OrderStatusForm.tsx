@@ -32,7 +32,7 @@ export function OrderStatusForm({ orderId, currentStatus }: { orderId: string; c
       <select
         value={status}
         onChange={(e) => setStatus(e.target.value)}
-        className="w-full rounded-xl border border-neutral-200 px-3 py-2.5 text-sm focus:outline-none"
+        className="w-full rounded-xl border border-neutral-300 px-3 py-2.5 text-sm focus:outline-none"
       >
         {STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
       </select>

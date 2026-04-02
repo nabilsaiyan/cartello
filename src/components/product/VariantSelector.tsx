@@ -65,7 +65,7 @@ export function VariantSelector({ variants, selectedId, onSelect }: VariantSelec
                   aria-pressed={isSelected}
                   className={cn(
                     "relative flex h-11 w-11 items-center justify-center rounded-full transition-all",
-                    isSelected ? "ring-2 ring-neutral-900 ring-offset-1" : "ring-1 ring-neutral-200 hover:ring-neutral-400",
+                    isSelected ? "ring-2 ring-neutral-900 ring-offset-1" : "ring-1 ring-neutral-300 hover:ring-neutral-400",
                     outOfStock && "opacity-40 cursor-not-allowed"
                   )}
                   style={{ backgroundColor: colorHex ?? "#ccc" }}
@@ -107,7 +107,7 @@ export function VariantSelector({ variants, selectedId, onSelect }: VariantSelec
                     "min-w-[3rem] rounded-full border px-3 py-1.5 text-sm font-medium transition-all",
                     isSelected
                       ? "border-neutral-900 bg-neutral-900 text-white"
-                      : "border-neutral-200 text-neutral-700 hover:border-neutral-400",
+                      : "border-neutral-300 text-neutral-700 hover:border-neutral-400",
                     outOfStock && "opacity-40 cursor-not-allowed line-through"
                   )}
                 >

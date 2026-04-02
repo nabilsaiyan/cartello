@@ -66,7 +66,7 @@ export function ProductFilters({ categories }: { categories: Category[] }) {
               placeholder="Min"
               value={minPrice}
               onChange={(e) => setMinPrice(e.target.value)}
-              className="w-full rounded-lg border border-neutral-200 px-3 py-2 text-sm focus:outline-none focus:border-neutral-400"
+              className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm focus:outline-none focus:border-neutral-400"
             />
             <span className="text-neutral-400">–</span>
             <input
@@ -74,7 +74,7 @@ export function ProductFilters({ categories }: { categories: Category[] }) {
               placeholder="Max"
               value={maxPrice}
               onChange={(e) => setMaxPrice(e.target.value)}
-              className="w-full rounded-lg border border-neutral-200 px-3 py-2 text-sm focus:outline-none focus:border-neutral-400"
+              className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm focus:outline-none focus:border-neutral-400"
             />
           </div>
           <button
