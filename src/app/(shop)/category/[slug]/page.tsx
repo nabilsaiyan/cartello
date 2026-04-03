@@ -24,11 +24,12 @@ export default async function CategoryPage({ params }: PageProps) {
   }) as ProductWithRelations[]
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-      <div className="mb-8">
-        <p className="text-xs font-semibold uppercase tracking-widest text-neutral-400">Collection</p>
-        <h1 className="mt-1 text-3xl font-bold text-neutral-900">{category.name}</h1>
-        <p className="mt-1 text-sm text-neutral-500">{products.length} products</p>
+    <div className="mx-auto max-w-7xl px-4 pt-4 pb-16 sm:px-6 lg:px-8">
+      <div className="mb-5 flex items-end justify-between">
+        <div>
+          <h1 className="font-display text-2xl font-light text-neutral-900">{category.name}</h1>
+          <p className="text-xs text-neutral-400">{products.length} product{products.length !== 1 ? "s" : ""}</p>
+        </div>
       </div>
       {products.length === 0 ? (
         <p className="py-20 text-center text-neutral-500">No products in this category yet.</p>
