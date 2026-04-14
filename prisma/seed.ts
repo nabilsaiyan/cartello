@@ -22,26 +22,26 @@ async function main() {
   const men = await prisma.category.upsert({
     where: { slug: "men" },
     update: {},
-    create: { name: "Men", slug: "men", image: "https://images.unsplash.com/photo-1617137968427-85924c800a22?w=600" },
+    create: { name: "Men", slug: "men", image: "/cat-men.png" },
   })
   const outerwear = await prisma.category.upsert({
     where: { slug: "outerwear" },
     update: {},
-    create: { name: "Outerwear", slug: "outerwear", image: "https://images.unsplash.com/photo-1544923246-77307dd654cb?w=600" },
+    create: { name: "Outerwear", slug: "outerwear", image: "/cat-outerwear.png" },
   })
   const accessories = await prisma.category.upsert({
     where: { slug: "accessories" },
     update: {},
-    create: { name: "Accessories", slug: "accessories", image: "https://images.unsplash.com/photo-1523170335258-f5ed11844a49?w=600" },
+    create: { name: "Accessories", slug: "accessories", image: "/cat-accessories.png" },
   })
   const newArrivals = await prisma.category.upsert({
     where: { slug: "new-arrivals" },
     update: {},
-    create: { name: "New Arrivals", slug: "new-arrivals", image: "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=600" },
+    create: { name: "New Arrivals", slug: "new-arrivals", image: "/cat-new-arrivals.png" },
   })
   console.log("✓ Categories ready")
 
-  // ── Wipe existing products cleanly so variants are always fresh ───────────
+  // ── Wipe existing products ─────────────────────────────────────────────────
   await prisma.orderItem.deleteMany()
   await prisma.cartItem.deleteMany()
   await prisma.wishlist.deleteMany()
@@ -50,26 +50,29 @@ async function main() {
   await prisma.product.deleteMany()
   console.log("✓ Cleared old products")
 
-  // ── Helper ─────────────────────────────────────────────────────────────────
+  // ── Size helpers ───────────────────────────────────────────────────────────
   const sizes = {
-    apparel: ["XS", "S", "M", "L", "XL", "XXL"],
-    core: ["S", "M", "L", "XL"],
-    trouser: ["30/30", "30/32", "32/30", "32/32", "34/32", "36/32"],
-    shoes: ["40", "41", "42", "43", "44", "45"],
-    belt: ['32"', '34"', '36"', '38"', '40"'],
+    apparel: ["XS", "S", "M", "L", "XL"],
+    trouser: ["28", "30", "32", "34", "36"],
+    shoes:   ["40", "41", "42", "43", "44", "45"],
+    belt:    ['32"', '34"', '36"', '38"', '40"'],
+    one:     ["One Size"],
   }
 
-  function colorVariants(
+  function variants(
     colors: { name: string; hex: string }[],
-    sizeList?: string[],
-    baseStock = 8,
-    basePrice?: number
+    sizeList: string[],
+    stock = 8,
+    price?: number
   ) {
-    if (!sizeList) {
-      return colors.map((c) => ({ color: c.name, colorHex: c.hex, stock: baseStock, price: basePrice }))
-    }
     return colors.flatMap((c) =>
-      sizeList.map((s) => ({ size: s, color: c.name, colorHex: c.hex, stock: baseStock, price: basePrice }))
+      sizeList.map((s) => ({
+        size: s,
+        color: c.name,
+        colorHex: c.hex,
+        stock,
+        price,
+      }))
     )
   }
 
@@ -79,727 +82,523 @@ async function main() {
     // ── MEN ──────────────────────────────────────────────────────────────────
 
     {
-      name: "Linen Relaxed Blazer",
-      slug: "linen-relaxed-blazer",
-      description: "A relaxed-fit blazer crafted from premium breathable linen. Tailored yet comfortable, it transitions effortlessly from the office to evening events. Unlined for maximum breathability.",
-      price: 189,
-      comparePrice: 249,
-      images: [
-        "https://images.unsplash.com/photo-1617137968427-85924c800a22?w=800",
-        "https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=800",
-      ],
+      name: "Slim-Fit Oxford Shirt",
+      slug: "slim-fit-oxford-shirt",
+      description: "A timeless Oxford button-down in two-ply cotton poplin. Slim fit, spread collar, and mother-of-pearl buttons. The cornerstone of any wardrobe — equally at home under a blazer or worn alone.",
+      price: 149,
+      comparePrice: null,
+      images: ["https://res.cloudinary.com/dvzs21utn/image/upload/cartello/products/shirt-white.png", "https://res.cloudinary.com/dvzs21utn/image/upload/cartello/products/shirt-blue.png"],
       categoryId: men.id,
-      tags: ["blazer", "linen", "summer", "tailoring"],
+      tags: ["shirt", "oxford", "cotton", "classic"],
       featured: true,
       published: true,
-      variants: colorVariants(
+      variants: variants(
         [
-          { name: "Ecru", hex: "#F5F0E8" },
-          { name: "Black", hex: "#0A0A0A" },
-          { name: "Stone", hex: "#9E9689" },
+          { name: "White",      hex: "#FFFFFF" },
+          { name: "Sky Blue",   hex: "#A8C4D4" },
         ],
-        sizes.core
+        sizes.apparel
       ),
     },
 
     {
-      name: "Merino Crew Sweater",
-      slug: "merino-crew-sweater",
-      description: "Knitted from 100% extra-fine merino wool. Incredibly soft against the skin with natural temperature-regulating properties. Ribbed collar, cuffs and hem.",
-      price: 129,
-      comparePrice: null,
-      images: [
-        "https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=800",
-        "https://images.unsplash.com/photo-1467043237213-65f2da53396f?w=800",
-      ],
+      name: "Tailored Wool Blazer",
+      slug: "tailored-wool-blazer",
+      description: "A single-breasted blazer in a medium-weight Italian wool. Clean notch lapels, a welt chest pocket, and flap hip pockets. Structured shoulders with a clean, contemporary silhouette.",
+      price: 449,
+      comparePrice: 549,
+      images: ["https://res.cloudinary.com/dvzs21utn/image/upload/cartello/products/blazer-navy.png", "https://res.cloudinary.com/dvzs21utn/image/upload/cartello/products/blazer-charcoal.png"],
       categoryId: men.id,
-      tags: ["sweater", "merino", "knitwear"],
+      tags: ["blazer", "wool", "tailoring", "italian"],
       featured: true,
       published: true,
-      variants: colorVariants(
+      variants: variants(
         [
-          { name: "Navy", hex: "#1B2A4A" },
-          { name: "Oatmeal", hex: "#D4C9B0" },
-          { name: "Forest Green", hex: "#2D4A2D" },
-          { name: "Burgundy", hex: "#6B1A2A" },
-        ],
-        sizes.core
-      ),
-    },
-
-    {
-      name: "Classic Oxford Shirt",
-      slug: "classic-oxford-shirt",
-      description: "A timeless Oxford button-down in two-ply cotton poplin. Slightly relaxed fit, single chest pocket, and mother-of-pearl buttons. The cornerstone of any wardrobe.",
-      price: 95,
-      comparePrice: null,
-      images: [
-        "https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=800",
-        "https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?w=800",
-      ],
-      categoryId: men.id,
-      tags: ["shirt", "oxford", "classic", "cotton"],
-      featured: false,
-      published: true,
-      variants: colorVariants(
-        [
-          { name: "White", hex: "#FFFFFF" },
-          { name: "Light Blue", hex: "#A8C4D4" },
-          { name: "Pink", hex: "#E8B4B8" },
-          { name: "Slate", hex: "#7A8B99" },
-        ],
-        sizes.core
-      ),
-    },
-
-    {
-      name: "Slim-Fit Chino Trousers",
-      slug: "slim-fit-chino-trousers",
-      description: "Slim-fit chinos in a stretch cotton twill. A versatile wardrobe staple that works from desk to weekend. Side and back pockets with zip fly closure.",
-      price: 118,
-      comparePrice: null,
-      images: [
-        "https://images.unsplash.com/photo-1473966968600-fa801b869a1a?w=800",
-        "https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=800",
-      ],
-      categoryId: men.id,
-      tags: ["trousers", "chinos", "slim-fit"],
-      featured: false,
-      published: true,
-      variants: colorVariants(
-        [
-          { name: "Khaki", hex: "#C3B091" },
-          { name: "Navy", hex: "#1B2A4A" },
-          { name: "Stone", hex: "#9E9689" },
-          { name: "Olive", hex: "#6B7C41" },
-        ],
-        sizes.trouser
-      ),
-    },
-
-    {
-      name: "Cashmere Roll-Neck",
-      slug: "cashmere-roll-neck",
-      description: "A relaxed-fit roll-neck in Grade-A Mongolian cashmere. Incredibly soft with natural stretch. An investment piece you will wear for years to come.",
-      price: 310,
-      comparePrice: 390,
-      images: [
-        "https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=800",
-        "https://images.unsplash.com/photo-1516762689617-e1cffcef479d?w=800",
-      ],
-      categoryId: men.id,
-      tags: ["cashmere", "knitwear", "luxury"],
-      featured: true,
-      published: true,
-      variants: colorVariants(
-        [
-          { name: "Chocolate", hex: "#7B3F00" },
-          { name: "Ivory", hex: "#FFFFF0" },
-          { name: "Slate", hex: "#708090" },
-          { name: "Camel", hex: "#C19A6B" },
-        ],
-        sizes.core
-      ),
-    },
-
-    {
-      name: "Tailored Wool Trousers",
-      slug: "tailored-wool-trousers",
-      description: "Slim-cut trousers in a medium-weight wool-blend cloth. Flat front with a single crease, side pockets and a zip fly. Finished with a turn-up hem.",
-      price: 165,
-      comparePrice: null,
-      images: [
-        "https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=800",
-        "https://images.unsplash.com/photo-1473966968600-fa801b869a1a?w=800",
-      ],
-      categoryId: men.id,
-      tags: ["trousers", "wool", "tailoring"],
-      featured: false,
-      published: true,
-      variants: colorVariants(
-        [
+          { name: "Navy",     hex: "#1B2A4A" },
           { name: "Charcoal", hex: "#36454F" },
-          { name: "Navy", hex: "#1B2A4A" },
-          { name: "Stone", hex: "#9E9689" },
+        ],
+        sizes.apparel
+      ),
+    },
+
+    {
+      name: "Slim-Fit Tailored Trousers",
+      slug: "slim-fit-tailored-trousers",
+      description: "Slim-cut trousers in a medium-weight wool-blend. Flat front with a single sharp crease, side pockets, and a zip fly. Finished with a clean hem — pairs perfectly with the Tailored Blazer.",
+      price: 199,
+      comparePrice: 249,
+      images: ["https://res.cloudinary.com/dvzs21utn/image/upload/cartello/products/trousers-black.png", "https://res.cloudinary.com/dvzs21utn/image/upload/cartello/products/trousers-grey.png"],
+      categoryId: men.id,
+      tags: ["trousers", "wool", "tailoring", "slim-fit"],
+      featured: false,
+      published: true,
+      variants: variants(
+        [
+          { name: "Black",       hex: "#0A0A0A" },
+          { name: "Heather Grey", hex: "#808080" },
         ],
         sizes.trouser
-      ),
-    },
-
-    {
-      name: "Relaxed Linen Shirt",
-      slug: "relaxed-linen-shirt",
-      description: "An easy-fitting shirt in washed, soft linen. The relaxed silhouette and natural texture make it perfect for warm days. Wear untucked for a laid-back look.",
-      price: 89,
-      comparePrice: null,
-      images: [
-        "https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?w=800",
-        "https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=800",
-      ],
-      categoryId: men.id,
-      tags: ["shirt", "linen", "summer", "relaxed"],
-      featured: false,
-      published: true,
-      variants: colorVariants(
-        [
-          { name: "White", hex: "#FFFFFF" },
-          { name: "Sky Blue", hex: "#87CEEB" },
-          { name: "Sand", hex: "#E8DCC8" },
-          { name: "Sage", hex: "#B2C4A8" },
-        ],
-        sizes.core
-      ),
-    },
-
-    {
-      name: "Pique Polo Shirt",
-      slug: "pique-polo-shirt",
-      description: "A clean-lined polo in breathable cotton piqué. Two-button placket, ribbed collar and cuffs. A smart casual essential that pairs with everything.",
-      price: 79,
-      comparePrice: null,
-      images: [
-        "https://images.unsplash.com/photo-1586363104862-3a5e2ab60d99?w=800",
-        "https://images.unsplash.com/photo-1622519407650-3df9883f76a5?w=800",
-      ],
-      categoryId: men.id,
-      tags: ["polo", "cotton", "summer"],
-      featured: false,
-      published: true,
-      variants: colorVariants(
-        [
-          { name: "White", hex: "#FFFFFF" },
-          { name: "Navy", hex: "#1B2A4A" },
-          { name: "Forest Green", hex: "#2D4A2D" },
-          { name: "Burgundy", hex: "#6B1A2A" },
-          { name: "Stone", hex: "#9E9689" },
-        ],
-        sizes.core
-      ),
-    },
-
-    {
-      name: "French Terry Sweatshirt",
-      slug: "french-terry-sweatshirt",
-      description: "Crafted from midweight loopback cotton terry. A relaxed crew-neck silhouette with dropped shoulders. The understated essential for weekends and layering.",
-      price: 98,
-      comparePrice: null,
-      images: [
-        "https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=800",
-        "https://images.unsplash.com/photo-1556821840-3a63f15732ce?w=800",
-      ],
-      categoryId: men.id,
-      tags: ["sweatshirt", "cotton", "casual"],
-      featured: false,
-      published: true,
-      variants: colorVariants(
-        [
-          { name: "Black", hex: "#0A0A0A" },
-          { name: "Heather Grey", hex: "#A8A8A8" },
-          { name: "Ecru", hex: "#F5F0E8" },
-          { name: "Navy", hex: "#1B2A4A" },
-        ],
-        sizes.apparel
-      ),
-    },
-
-    {
-      name: "Slim-Fit Dark Jeans",
-      slug: "slim-fit-dark-jeans",
-      description: "Five-pocket jeans in a stretch selvedge denim. Slim through the hip and thigh with a tapered leg. Made in Japan from premium ring-spun cotton.",
-      price: 145,
-      comparePrice: null,
-      images: [
-        "https://images.unsplash.com/photo-1542272604-787c3835535d?w=800",
-        "https://images.unsplash.com/photo-1555689502-c4b22d76c56f?w=800",
-      ],
-      categoryId: men.id,
-      tags: ["jeans", "denim", "slim-fit"],
-      featured: false,
-      published: true,
-      variants: colorVariants(
-        [
-          { name: "Indigo", hex: "#3B3F8C" },
-          { name: "Black", hex: "#0A0A0A" },
-          { name: "Washed Grey", hex: "#808080" },
-        ],
-        sizes.trouser
-      ),
-    },
-
-    {
-      name: "Ribbed Cotton T-Shirt",
-      slug: "ribbed-cotton-t-shirt",
-      description: "A foundational tee in heavyweight 230gsm ribbed cotton. A slim fit with a slightly longer length to be worn tucked or untucked. Durable and gets better with every wash.",
-      price: 45,
-      comparePrice: null,
-      images: [
-        "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=800",
-        "https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=800",
-      ],
-      categoryId: men.id,
-      tags: ["t-shirt", "cotton", "basic"],
-      featured: false,
-      published: true,
-      variants: colorVariants(
-        [
-          { name: "White", hex: "#FFFFFF" },
-          { name: "Black", hex: "#0A0A0A" },
-          { name: "Slate", hex: "#708090" },
-          { name: "Sand", hex: "#E8DCC8" },
-        ],
-        sizes.apparel
-      ),
-    },
-
-    {
-      name: "Loopback Hoodie",
-      slug: "loopback-hoodie",
-      description: "A midweight loopback fleece hoodie with a relaxed fit. Two side pockets, adjustable drawcord hood and ribbed hem. A wardrobe constant for colder days.",
-      price: 115,
-      comparePrice: null,
-      images: [
-        "https://images.unsplash.com/photo-1556821840-3a63f15732ce?w=800",
-        "https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=800",
-      ],
-      categoryId: men.id,
-      tags: ["hoodie", "fleece", "casual"],
-      featured: false,
-      published: true,
-      variants: colorVariants(
-        [
-          { name: "Black", hex: "#0A0A0A" },
-          { name: "Heather Grey", hex: "#A8A8A8" },
-          { name: "Navy", hex: "#1B2A4A" },
-          { name: "Slate", hex: "#708090" },
-        ],
-        sizes.apparel
       ),
     },
 
     // ── OUTERWEAR ─────────────────────────────────────────────────────────────
 
     {
-      name: "Technical Bomber Jacket",
-      slug: "technical-bomber-jacket",
-      description: "A modern bomber in water-resistant ripstop nylon. Ribbed collar, cuffs and hem. Two zip pockets at chest and interior mesh lining. A versatile layering piece.",
-      price: 220,
-      comparePrice: 275,
-      images: [
-        "https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?w=800",
-        "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=800",
-      ],
-      categoryId: outerwear.id,
-      tags: ["jacket", "bomber", "outerwear", "nylon"],
-      featured: true,
-      published: true,
-      variants: colorVariants(
-        [
-          { name: "Olive", hex: "#6B7C41" },
-          { name: "Black", hex: "#0A0A0A" },
-          { name: "Navy", hex: "#1B2A4A" },
-        ],
-        sizes.core
-      ),
-    },
-
-    {
       name: "Double-Breasted Wool Overcoat",
       slug: "double-breasted-wool-overcoat",
-      description: "A full-length double-breasted overcoat in a heavyweight Italian wool-blend. Notch lapels, welt pockets, and a half-satin lining. The definitive cold-weather statement.",
-      price: 495,
-      comparePrice: 620,
-      images: [
-        "https://images.unsplash.com/photo-1544923246-77307dd654cb?w=800",
-        "https://images.unsplash.com/photo-1520975954-b8079d6b3b39?w=800",
-      ],
+      description: "A full-length overcoat in a heavyweight Italian wool blend. Wide notch lapels, self-tie belt, and deep side pockets. The definitive cold-weather statement — built to last decades.",
+      price: 649,
+      comparePrice: null,
+      images: ["https://res.cloudinary.com/dvzs21utn/image/upload/cartello/products/coat-camel.png", "https://res.cloudinary.com/dvzs21utn/image/upload/cartello/products/coat-navy.png"],
       categoryId: outerwear.id,
-      tags: ["coat", "wool", "overcoat", "tailoring"],
+      tags: ["coat", "wool", "overcoat", "tailoring", "italian"],
       featured: true,
       published: true,
-      variants: colorVariants(
+      variants: variants(
         [
           { name: "Camel", hex: "#C19A6B" },
-          { name: "Charcoal", hex: "#36454F" },
-          { name: "Navy", hex: "#1B2A4A" },
+          { name: "Navy",  hex: "#1B2A4A" },
         ],
-        sizes.core
-      ),
-    },
-
-    {
-      name: "Quilted Down Vest",
-      slug: "quilted-down-vest",
-      description: "A lightweight yet warm quilted vest filled with responsible-down. Channel quilting, two zip pockets and a stand-up collar. Ideal for layering in transitional weather.",
-      price: 145,
-      comparePrice: null,
-      images: [
-        "https://images.unsplash.com/photo-1553754538-48b4df67c2f0?w=800",
-        "https://images.unsplash.com/photo-1578681994506-b8f463449011?w=800",
-      ],
-      categoryId: outerwear.id,
-      tags: ["vest", "down", "quilted", "outerwear"],
-      featured: false,
-      published: true,
-      variants: colorVariants(
-        [
-          { name: "Black", hex: "#0A0A0A" },
-          { name: "Navy", hex: "#1B2A4A" },
-          { name: "Forest Green", hex: "#2D4A2D" },
-        ],
-        sizes.core
-      ),
-    },
-
-    {
-      name: "Waxed Cotton Field Jacket",
-      slug: "waxed-cotton-field-jacket",
-      description: "A four-pocket field jacket in waxed organic cotton canvas. Wind and water resistant with a corduroy collar. Inspired by British country traditions.",
-      price: 285,
-      comparePrice: null,
-      images: [
-        "https://images.unsplash.com/photo-1551232864-3f0890e1de6a?w=800",
-        "https://images.unsplash.com/photo-1600185365483-26d0a4ea9734?w=800",
-      ],
-      categoryId: outerwear.id,
-      tags: ["jacket", "waxed", "field", "cotton"],
-      featured: false,
-      published: true,
-      variants: colorVariants(
-        [
-          { name: "Olive", hex: "#6B7C41" },
-          { name: "Dark Brown", hex: "#3B1F0A" },
-          { name: "Black", hex: "#0A0A0A" },
-        ],
-        sizes.core
-      ),
-    },
-
-    {
-      name: "Lightweight Parka",
-      slug: "lightweight-parka",
-      description: "A slim-cut parka in a technical ripstop fabric with a DWR finish. Removable faux-fur hood trim, two hand pockets and one internal pocket. Warm without the bulk.",
-      price: 195,
-      comparePrice: null,
-      images: [
-        "https://images.unsplash.com/photo-1547949003-9792a18a2601?w=800",
-        "https://images.unsplash.com/photo-1544966503-7cc5ac882d5f?w=800",
-      ],
-      categoryId: outerwear.id,
-      tags: ["parka", "jacket", "outerwear"],
-      featured: false,
-      published: true,
-      variants: colorVariants(
-        [
-          { name: "Black", hex: "#0A0A0A" },
-          { name: "Olive", hex: "#6B7C41" },
-          { name: "Stone", hex: "#9E9689" },
-        ],
-        sizes.core
-      ),
-    },
-
-    {
-      name: "Double-Breasted Peacoat",
-      slug: "double-breasted-peacoat",
-      description: "A classic double-breasted peacoat in a boiled Italian wool blend. Six-button closure, wide notch lapels, and a clean back. Built to last a lifetime.",
-      price: 345,
-      comparePrice: null,
-      images: [
-        "https://images.unsplash.com/photo-1512036666432-2b8dabb9074c?w=800",
-        "https://images.unsplash.com/photo-1595341888016-a392ef81b7de?w=800",
-      ],
-      categoryId: outerwear.id,
-      tags: ["peacoat", "wool", "outerwear", "tailoring"],
-      featured: false,
-      published: true,
-      variants: colorVariants(
-        [
-          { name: "Navy", hex: "#1B2A4A" },
-          { name: "Charcoal", hex: "#36454F" },
-          { name: "Camel", hex: "#C19A6B" },
-        ],
-        sizes.core
-      ),
-    },
-
-    // ── ACCESSORIES ───────────────────────────────────────────────────────────
-
-    {
-      name: "Leather Tote Bag",
-      slug: "leather-tote-bag",
-      description: "A structured tote in full-grain vegetable-tanned leather. Spacious main compartment, interior zip pocket, and solid brass hardware. Made in Italy.",
-      price: 295,
-      comparePrice: 370,
-      images: [
-        "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=800",
-        "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=800",
-      ],
-      categoryId: accessories.id,
-      tags: ["bag", "leather", "tote", "made in italy"],
-      featured: true,
-      published: true,
-      variants: colorVariants([
-        { name: "Tan", hex: "#C4A882" },
-        { name: "Black", hex: "#0A0A0A" },
-        { name: "Dark Brown", hex: "#3B1F0A" },
-      ]),
-    },
-
-    {
-      name: "Minimalist Steel Watch",
-      slug: "minimalist-steel-watch",
-      description: "A clean minimalist timepiece with a brushed stainless steel case and sapphire crystal glass. Swiss movement, 5ATM water resistance, 40mm case diameter.",
-      price: 345,
-      comparePrice: null,
-      images: [
-        "https://images.unsplash.com/photo-1523170335258-f5ed11844a49?w=800",
-        "https://images.unsplash.com/photo-1508057198894-247b23fe5ade?w=800",
-      ],
-      categoryId: accessories.id,
-      tags: ["watch", "steel", "minimalist", "swiss"],
-      featured: true,
-      published: true,
-      variants: colorVariants([
-        { name: "Silver / Black", hex: "#C0C0C0" },
-        { name: "Gold / Brown", hex: "#C5A028" },
-        { name: "Silver / White", hex: "#E8E8E8" },
-      ]),
-    },
-
-    {
-      name: "Full-Grain Leather Belt",
-      slug: "full-grain-leather-belt",
-      description: "A 35mm dress belt in full-grain calf leather with a polished silver-tone pin buckle. Vegetable-tanned for longevity. Will develop a rich patina over time.",
-      price: 85,
-      comparePrice: null,
-      images: [
-        "https://images.unsplash.com/photo-1585386959984-a4155224a1ad?w=800",
-        "https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?w=800",
-      ],
-      categoryId: accessories.id,
-      tags: ["belt", "leather", "accessories"],
-      featured: false,
-      published: true,
-      variants: colorVariants(
-        [
-          { name: "Tan", hex: "#C4A882" },
-          { name: "Black", hex: "#0A0A0A" },
-          { name: "Dark Brown", hex: "#3B1F0A" },
-        ],
-        sizes.belt
-      ),
-    },
-
-    {
-      name: "Merino Wool Scarf",
-      slug: "merino-wool-scarf",
-      description: "A generous scarf woven from extra-fine merino wool. Soft, lightweight, and warm. The fringed ends and 190cm length give plenty of styling options.",
-      price: 75,
-      comparePrice: null,
-      images: [
-        "https://images.unsplash.com/photo-1520903920243-00d872a2d1c9?w=800",
-        "https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=800",
-      ],
-      categoryId: accessories.id,
-      tags: ["scarf", "merino", "wool", "accessories"],
-      featured: false,
-      published: true,
-      variants: colorVariants([
-        { name: "Camel", hex: "#C19A6B" },
-        { name: "Navy", hex: "#1B2A4A" },
-        { name: "Charcoal", hex: "#36454F" },
-        { name: "Burgundy", hex: "#6B1A2A" },
-      ]),
-    },
-
-    {
-      name: "Canvas Weekender Bag",
-      slug: "canvas-weekender-bag",
-      description: "A spacious weekender in washed canvas with full-grain leather trim and brass hardware. Interior shoe compartment, laptop sleeve, and exterior zip pocket.",
-      price: 195,
-      comparePrice: null,
-      images: [
-        "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=800",
-        "https://images.unsplash.com/photo-1491553895911-0055eca6402d?w=800",
-      ],
-      categoryId: accessories.id,
-      tags: ["bag", "canvas", "weekender", "travel"],
-      featured: false,
-      published: true,
-      variants: colorVariants([
-        { name: "Olive", hex: "#6B7C41" },
-        { name: "Navy", hex: "#1B2A4A" },
-        { name: "Black", hex: "#0A0A0A" },
-      ]),
-    },
-
-    {
-      name: "Leather Card Holder",
-      slug: "leather-card-holder",
-      description: "A slim bi-fold card holder in full-grain calf leather. Four card slots, one cash compartment. Fits in any pocket without adding bulk.",
-      price: 55,
-      comparePrice: null,
-      images: [
-        "https://images.unsplash.com/photo-1612428985540-9bff82bde621?w=800",
-        "https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?w=800",
-      ],
-      categoryId: accessories.id,
-      tags: ["wallet", "leather", "accessories", "minimal"],
-      featured: false,
-      published: true,
-      variants: colorVariants([
-        { name: "Black", hex: "#0A0A0A" },
-        { name: "Tan", hex: "#C4A882" },
-        { name: "Dark Brown", hex: "#3B1F0A" },
-      ]),
-    },
-
-    {
-      name: "Leather Derby Shoes",
-      slug: "leather-derby-shoes",
-      description: "Classic open-lacing derby shoes in full-grain calfskin. Hand-stitched Goodyear welt construction, leather outsole and insole. Made in Portugal.",
-      price: 265,
-      comparePrice: null,
-      images: [
-        "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800",
-        "https://images.unsplash.com/photo-1600269452121-4f2416e55c28?w=800",
-      ],
-      categoryId: accessories.id,
-      tags: ["shoes", "leather", "derby", "made in portugal"],
-      featured: false,
-      published: true,
-      variants: colorVariants(
-        [
-          { name: "Black", hex: "#0A0A0A" },
-          { name: "Dark Brown", hex: "#3B1F0A" },
-          { name: "Tan", hex: "#C4A882" },
-        ],
-        sizes.shoes
+        sizes.apparel
       ),
     },
 
     // ── NEW ARRIVALS ──────────────────────────────────────────────────────────
 
     {
-      name: "Merino Half-Zip",
-      slug: "merino-half-zip",
-      description: "A refined half-zip pullover in extra-fine merino wool. Ribbed hem and cuffs, mock neck with a metal zip. Polished enough for the office, casual enough for the weekend.",
-      price: 155,
+      name: "Cashmere Crewneck Sweater",
+      slug: "cashmere-crewneck-sweater",
+      description: "Knitted from Grade-A Mongolian cashmere. Incredibly soft with natural temperature-regulating properties. Ribbed collar, cuffs and hem with a slim, flattering silhouette. An investment piece.",
+      price: 349,
       comparePrice: null,
-      images: [
-        "https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=800",
-        "https://images.unsplash.com/photo-1467043237213-65f2da53396f?w=800",
-      ],
+      images: ["https://res.cloudinary.com/dvzs21utn/image/upload/cartello/products/sweater-camel.png", "https://res.cloudinary.com/dvzs21utn/image/upload/cartello/products/sweater-green.png"],
       categoryId: newArrivals.id,
-      tags: ["knitwear", "merino", "half-zip", "new"],
+      tags: ["sweater", "cashmere", "knitwear", "luxury", "new"],
       featured: true,
       published: true,
-      variants: colorVariants(
+      variants: variants(
         [
-          { name: "Navy", hex: "#1B2A4A" },
-          { name: "Burgundy", hex: "#6B1A2A" },
-          { name: "Charcoal", hex: "#36454F" },
-          { name: "Camel", hex: "#C19A6B" },
+          { name: "Camel",        hex: "#C19A6B" },
+          { name: "Forest Green", hex: "#2D4A2D" },
         ],
-        sizes.core
+        sizes.apparel
       ),
     },
 
-    {
-      name: "Pleated Linen Trousers",
-      slug: "pleated-linen-trousers",
-      description: "Single-pleat trousers in a lightweight European linen. Relaxed through the hip with a tapered leg. Ideal for warm-weather dressing with a clean, elevated feel.",
-      price: 135,
-      comparePrice: null,
-      images: [
-        "https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=800",
-        "https://images.unsplash.com/photo-1473966968600-fa801b869a1a?w=800",
-      ],
-      categoryId: newArrivals.id,
-      tags: ["trousers", "linen", "pleated", "summer", "new"],
-      featured: false,
-      published: true,
-      variants: colorVariants(
-        [
-          { name: "Ecru", hex: "#F5F0E8" },
-          { name: "Navy", hex: "#1B2A4A" },
-          { name: "Sand", hex: "#E8DCC8" },
-        ],
-        sizes.trouser
-      ),
-    },
+    // ── ACCESSORIES ───────────────────────────────────────────────────────────
 
     {
-      name: "Suede Chelsea Boots",
-      slug: "suede-chelsea-boots",
-      description: "A sleek Chelsea boot in premium suede with elasticated side gussets and a subtle stacked leather heel. Resoleable Goodyear welt. Made in Spain.",
-      price: 295,
-      comparePrice: 360,
-      images: [
-        "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800",
-        "https://images.unsplash.com/photo-1600269452121-4f2416e55c28?w=800",
-      ],
-      categoryId: newArrivals.id,
-      tags: ["boots", "chelsea", "suede", "new", "made in spain"],
+      name: "Cap-Toe Oxford Shoes",
+      slug: "cap-toe-oxford-shoes",
+      description: "Classic closed-lacing Oxfords in full-grain calfskin. Hand-stitched Goodyear welt construction with a leather outsole. The cap-toe detail adds a refined formality. Made in England.",
+      price: 495,
+      comparePrice: 595,
+      images: ["https://res.cloudinary.com/dvzs21utn/image/upload/cartello/products/shoes-brown.png", "https://res.cloudinary.com/dvzs21utn/image/upload/cartello/products/shoes-black.png"],
+      categoryId: accessories.id,
+      tags: ["shoes", "oxford", "leather", "goodyear-welt", "made in england"],
       featured: true,
       published: true,
-      variants: colorVariants(
+      variants: variants(
         [
-          { name: "Dark Brown", hex: "#3B1F0A" },
-          { name: "Black", hex: "#0A0A0A" },
-          { name: "Tan", hex: "#C4A882" },
+          { name: "Cognac Brown", hex: "#8B4513" },
+          { name: "Black",        hex: "#0A0A0A" },
         ],
         sizes.shoes
       ),
     },
 
     {
-      name: "Lambswool Zip Cardigan",
-      slug: "lambswool-zip-cardigan",
-      description: "A full-zip cardigan in a textured lambswool blend. Rib-knit collar, hem and cuffs, two side pockets. A sophisticated alternative to the hoodie.",
-      price: 145,
+      name: "Herringbone Wool Scarf",
+      slug: "herringbone-wool-scarf",
+      description: "A generous scarf woven from fine merino wool in a classic herringbone weave. 190cm length with hand-finished fringe ends. Warm, lightweight, and effortlessly elegant.",
+      price: 129,
       comparePrice: null,
-      images: [
-        "https://images.unsplash.com/photo-1516762689617-e1cffcef479d?w=800",
-        "https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=800",
-      ],
-      categoryId: newArrivals.id,
-      tags: ["cardigan", "lambswool", "knitwear", "new"],
+      images: ["https://res.cloudinary.com/dvzs21utn/image/upload/cartello/products/scarf-navy.png", "https://res.cloudinary.com/dvzs21utn/image/upload/cartello/products/scarf-burgundy.png"],
+      categoryId: accessories.id,
+      tags: ["scarf", "wool", "herringbone", "accessories"],
       featured: false,
       published: true,
-      variants: colorVariants(
+      variants: variants(
         [
-          { name: "Oatmeal", hex: "#D4C9B0" },
-          { name: "Navy", hex: "#1B2A4A" },
-          { name: "Forest Green", hex: "#2D4A2D" },
+          { name: "Navy",     hex: "#1B2A4A" },
+          { name: "Burgundy", hex: "#6B1A2A" },
         ],
-        sizes.core
+        sizes.one
+      ),
+    },
+
+    {
+      name: "Slim Leather Dress Belt",
+      slug: "slim-leather-dress-belt",
+      description: "A 30mm dress belt in full-grain vegetable-tanned calfskin. Will develop a rich patina over years of wear. Solid brass or silver-tone pin buckle. Stitched edges, made to last a lifetime.",
+      price: 149,
+      comparePrice: null,
+      images: ["https://res.cloudinary.com/dvzs21utn/image/upload/cartello/products/belt-cognac.png", "https://res.cloudinary.com/dvzs21utn/image/upload/cartello/products/belt-black.png"],
+      categoryId: accessories.id,
+      tags: ["belt", "leather", "accessories", "made in italy"],
+      featured: false,
+      published: true,
+      variants: variants(
+        [
+          { name: "Cognac / Gold",  hex: "#8B4513" },
+          { name: "Black / Silver", hex: "#0A0A0A" },
+        ],
+        sizes.belt
+      ),
+    },
+
+    // ── MEN (extended) ────────────────────────────────────────────────────────
+
+    {
+      name: "Slim-Fit Linen Shirt",
+      slug: "slim-fit-linen-shirt",
+      description: "A breezy slim-fit shirt in 100% European linen. Naturally breathable and effortlessly elegant — the definitive warm-weather staple. Single-button barrel cuffs and a clean spread collar.",
+      price: 129,
+      comparePrice: null,
+      images: ["https://res.cloudinary.com/dvzs21utn/image/upload/cartello/products/linen-white.png", "https://res.cloudinary.com/dvzs21utn/image/upload/cartello/products/linen-stone.png"],
+      categoryId: men.id,
+      tags: ["shirt", "linen", "summer", "classic"],
+      featured: false,
+      published: true,
+      variants: variants(
+        [
+          { name: "White",        hex: "#FFFFFF" },
+          { name: "Stone",        hex: "#C2B59B" },
+        ],
+        sizes.apparel
+      ),
+    },
+
+    {
+      name: "Merino Polo Shirt",
+      slug: "merino-polo-shirt",
+      description: "A fine-knit polo in 100% extra-fine merino wool. Incredibly soft against the skin, naturally odour-resistant, and sharp enough to wear in lieu of a shirt. Ribbed collar and three-button placket.",
+      price: 179,
+      comparePrice: null,
+      images: ["https://res.cloudinary.com/dvzs21utn/image/upload/cartello/products/polo-navy.png", "https://res.cloudinary.com/dvzs21utn/image/upload/cartello/products/polo-burgundy.png"],
+      categoryId: men.id,
+      tags: ["polo", "merino", "knitwear", "smart-casual"],
+      featured: true,
+      published: true,
+      variants: variants(
+        [
+          { name: "Navy",     hex: "#1B2A4A" },
+          { name: "Burgundy", hex: "#6B1A2A" },
+        ],
+        sizes.apparel
+      ),
+    },
+
+    {
+      name: "Slim-Fit Chino Trousers",
+      slug: "slim-fit-chino-trousers",
+      description: "A clean flat-front chino in a premium cotton-twill blend. Slim through the thigh and tapered to the ankle. Versatile enough to pair with a blazer or a simple tee.",
+      price: 159,
+      comparePrice: null,
+      images: ["https://res.cloudinary.com/dvzs21utn/image/upload/cartello/products/chinos-khaki.png", "https://res.cloudinary.com/dvzs21utn/image/upload/cartello/products/chinos-olive.png"],
+      categoryId: men.id,
+      tags: ["chinos", "cotton", "trousers", "casual"],
+      featured: false,
+      published: true,
+      variants: variants(
+        [
+          { name: "Khaki",        hex: "#C3A882" },
+          { name: "Olive",        hex: "#6B7C47" },
+        ],
+        sizes.trouser
+      ),
+    },
+
+    {
+      name: "Straight-Leg Denim Jeans",
+      slug: "straight-leg-denim-jeans",
+      description: "A straight-leg jean in a premium 12oz Japanese selvedge denim. Structured enough to hold its shape, with just enough give for all-day comfort. Five pockets, zip fly, and a clean minimal finish.",
+      price: 219,
+      comparePrice: 269,
+      images: ["https://res.cloudinary.com/dvzs21utn/image/upload/cartello/products/jeans-indigo.png", "https://res.cloudinary.com/dvzs21utn/image/upload/cartello/products/jeans-black.png"],
+      categoryId: men.id,
+      tags: ["jeans", "denim", "selvedge", "casual"],
+      featured: true,
+      published: true,
+      variants: variants(
+        [
+          { name: "Indigo",       hex: "#3B5998" },
+          { name: "Black",        hex: "#0A0A0A" },
+        ],
+        sizes.trouser
+      ),
+    },
+
+    {
+      name: "Ribbed Merino Cardigan",
+      slug: "ribbed-merino-cardigan",
+      description: "A full-rib cardigan knitted from extra-fine merino wool. Button-front with a V-neck and deep ribbing at the cuffs and hem. Layered over a shirt or worn alone — endlessly adaptable.",
+      price: 259,
+      comparePrice: null,
+      images: ["https://res.cloudinary.com/dvzs21utn/image/upload/cartello/products/cardigan-charcoal.png", "https://res.cloudinary.com/dvzs21utn/image/upload/cartello/products/cardigan-brown.png"],
+      categoryId: newArrivals.id,
+      tags: ["cardigan", "merino", "knitwear", "new"],
+      featured: true,
+      published: true,
+      variants: variants(
+        [
+          { name: "Charcoal",     hex: "#36454F" },
+          { name: "Chocolate",    hex: "#5C3317" },
+        ],
+        sizes.apparel
+      ),
+    },
+
+    // ── OUTERWEAR (extended) ──────────────────────────────────────────────────
+
+    {
+      name: "Wool Peacoat",
+      slug: "wool-peacoat",
+      description: "A classic double-breasted peacoat in a heavyweight Italian wool blend. Wide peaked lapels, six anchor buttons, and a clean hip-length silhouette. Built for cold weather — as elegant as it is warm.",
+      price: 549,
+      comparePrice: null,
+      images: ["https://res.cloudinary.com/dvzs21utn/image/upload/cartello/products/peacoat-navy.png", "https://res.cloudinary.com/dvzs21utn/image/upload/cartello/products/peacoat-camel.png"],
+      categoryId: outerwear.id,
+      tags: ["peacoat", "wool", "outerwear", "italian"],
+      featured: true,
+      published: true,
+      variants: variants(
+        [
+          { name: "Navy",  hex: "#1B2A4A" },
+          { name: "Camel", hex: "#C19A6B" },
+        ],
+        sizes.apparel
+      ),
+    },
+
+    {
+      name: "Slim Bomber Jacket",
+      slug: "slim-bomber-jacket",
+      description: "A refined take on the MA-1 silhouette. Crafted in a compact nylon shell with a satin lining and ribbed collar, cuffs, and hem. A modern essential for the transitional wardrobe.",
+      price: 299,
+      comparePrice: 369,
+      images: ["https://res.cloudinary.com/dvzs21utn/image/upload/cartello/products/bomber-olive.png", "https://res.cloudinary.com/dvzs21utn/image/upload/cartello/products/bomber-black.png"],
+      categoryId: outerwear.id,
+      tags: ["bomber", "jacket", "outerwear", "casual"],
+      featured: false,
+      published: true,
+      variants: variants(
+        [
+          { name: "Olive", hex: "#6B7C47" },
+          { name: "Black", hex: "#0A0A0A" },
+        ],
+        sizes.apparel
+      ),
+    },
+
+    // ── MEN (extended 2) ─────────────────────────────────────────────────────
+
+    {
+      name: "Ribbed Turtleneck Sweater",
+      slug: "ribbed-turtleneck-sweater",
+      description: "A fine-knit ribbed turtleneck in extra-fine merino wool. The high roll neck traps warmth without bulk. Slim fit with a clean minimal finish — the backbone of a cold-weather capsule.",
+      price: 229,
+      comparePrice: null,
+      images: ["https://res.cloudinary.com/dvzs21utn/image/upload/v1780764895/cartello/products/turtle-oatmeal.png", "https://res.cloudinary.com/dvzs21utn/image/upload/v1780764896/cartello/products/turtle-black.png"],
+      categoryId: men.id,
+      tags: ["turtleneck", "merino", "knitwear", "winter"],
+      featured: false,
+      published: true,
+      variants: variants(
+        [
+          { name: "Oatmeal", hex: "#D4C5A9" },
+          { name: "Black",   hex: "#0A0A0A" },
+        ],
+        sizes.apparel
+      ),
+    },
+
+    {
+      name: "Tailored Wool Waistcoat",
+      slug: "tailored-wool-waistcoat",
+      description: "A five-button waistcoat cut from the same Italian wool as our blazer. Notch lapels, adjustable back strap, and welt pockets. Wear it as part of a three-piece or alone over a shirt.",
+      price: 249,
+      comparePrice: null,
+      images: ["https://res.cloudinary.com/dvzs21utn/image/upload/v1780764897/cartello/products/waistcoat-navy.png", "https://res.cloudinary.com/dvzs21utn/image/upload/v1780764898/cartello/products/waistcoat-charcoal.png"],
+      categoryId: men.id,
+      tags: ["waistcoat", "wool", "tailoring", "suit"],
+      featured: false,
+      published: true,
+      variants: variants(
+        [
+          { name: "Navy",     hex: "#1B2A4A" },
+          { name: "Charcoal", hex: "#36454F" },
+        ],
+        sizes.apparel
+      ),
+    },
+
+    {
+      name: "Cotton Henley Shirt",
+      slug: "cotton-henley-shirt",
+      description: "A long-sleeve henley in a premium cotton-jersey. The three-button placket adds just enough detail to elevate it above a plain tee. Slim fit, soft, and incredibly versatile.",
+      price: 99,
+      comparePrice: null,
+      images: ["https://res.cloudinary.com/dvzs21utn/image/upload/v1780764900/cartello/products/henley-grey.png", "https://res.cloudinary.com/dvzs21utn/image/upload/v1780764901/cartello/products/henley-white.png"],
+      categoryId: men.id,
+      tags: ["henley", "cotton", "casual", "basics"],
+      featured: false,
+      published: true,
+      variants: variants(
+        [
+          { name: "Heather Grey", hex: "#808080" },
+          { name: "White",        hex: "#FFFFFF" },
+        ],
+        sizes.apparel
+      ),
+    },
+
+    // ── OUTERWEAR (extended 2) ────────────────────────────────────────────────
+
+    {
+      name: "Leather Field Jacket",
+      slug: "leather-field-jacket",
+      description: "A slim-cut field jacket in full-grain calfskin. Zip front with a press-stud storm flap, chest and side pockets, and ribbed cuffs. Rugged enough for the elements, refined enough for the city.",
+      price: 695,
+      comparePrice: null,
+      images: ["https://res.cloudinary.com/dvzs21utn/image/upload/v1780764903/cartello/products/field-tan.png", "https://res.cloudinary.com/dvzs21utn/image/upload/v1780764905/cartello/products/field-olive.png"],
+      categoryId: outerwear.id,
+      tags: ["jacket", "leather", "outerwear", "field"],
+      featured: true,
+      published: true,
+      variants: variants(
+        [
+          { name: "Tan",   hex: "#C19A6B" },
+          { name: "Olive", hex: "#6B7C47" },
+        ],
+        sizes.apparel
+      ),
+    },
+
+    {
+      name: "Quilted Liner Gilet",
+      slug: "quilted-liner-gilet",
+      description: "A lightweight quilted vest in a compact nylon shell. Zip front with minimal external pockets. Worn over a shirt or under a coat — a versatile layer that punches well above its weight.",
+      price: 189,
+      comparePrice: null,
+      images: ["https://res.cloudinary.com/dvzs21utn/image/upload/v1780763577/cartello/products/gilet-navy.png", "https://res.cloudinary.com/dvzs21utn/image/upload/v1780764907/cartello/products/gilet-black.png"],
+      categoryId: outerwear.id,
+      tags: ["gilet", "vest", "quilted", "outerwear"],
+      featured: false,
+      published: true,
+      variants: variants(
+        [
+          { name: "Navy",  hex: "#1B2A4A" },
+          { name: "Black", hex: "#0A0A0A" },
+        ],
+        sizes.apparel
+      ),
+    },
+
+    // ── ACCESSORIES (extended) ────────────────────────────────────────────────
+
+    {
+      name: "Suede Chelsea Boots",
+      slug: "suede-chelsea-boots",
+      description: "A sleek Chelsea boot in premium suede calfskin. Elastic side panels for easy slip-on wear, stacked leather heel, and a slim almond toe. Pairs effortlessly with trousers or denim alike.",
+      price: 425,
+      comparePrice: null,
+      images: ["https://res.cloudinary.com/dvzs21utn/image/upload/cartello/products/chelsea-tan.png", "https://res.cloudinary.com/dvzs21utn/image/upload/cartello/products/chelsea-black.png"],
+      categoryId: accessories.id,
+      tags: ["boots", "chelsea", "suede", "leather"],
+      featured: true,
+      published: true,
+      variants: variants(
+        [
+          { name: "Tan",   hex: "#C19A6B" },
+          { name: "Black", hex: "#0A0A0A" },
+        ],
+        sizes.shoes
+      ),
+    },
+
+    {
+      name: "Suede Penny Loafers",
+      slug: "suede-penny-loafers",
+      description: "A slip-on penny loafer in premium suede calfskin. The clean saddle strap and low stacked heel keep it sharp. Equally at home with tailored trousers or slim-fit denim.",
+      price: 365,
+      comparePrice: null,
+      images: ["https://res.cloudinary.com/dvzs21utn/image/upload/v1780764908/cartello/products/loafer-cognac.png", "https://res.cloudinary.com/dvzs21utn/image/upload/v1780764909/cartello/products/loafer-navy.png"],
+      categoryId: accessories.id,
+      tags: ["loafers", "suede", "shoes", "smart-casual"],
+      featured: false,
+      published: true,
+      variants: variants(
+        [
+          { name: "Cognac", hex: "#8B4513" },
+          { name: "Navy",   hex: "#1B2A4A" },
+        ],
+        sizes.shoes
+      ),
+    },
+
+    {
+      name: "Full-Brogue Derby Shoes",
+      slug: "full-brogue-derby-shoes",
+      description: "Open-lacing Derbies with a wingtip cap toe and traditional brogue detailing throughout. Crafted in full-grain calfskin with Goodyear welt construction and a leather outsole. Character built in from day one.",
+      price: 445,
+      comparePrice: 525,
+      images: ["https://res.cloudinary.com/dvzs21utn/image/upload/v1780764910/cartello/products/brogue-tan.png", "https://res.cloudinary.com/dvzs21utn/image/upload/v1780764912/cartello/products/brogue-oxblood.png"],
+      categoryId: accessories.id,
+      tags: ["shoes", "brogue", "derby", "leather", "goodyear-welt"],
+      featured: true,
+      published: true,
+      variants: variants(
+        [
+          { name: "Tan",      hex: "#C19A6B" },
+          { name: "Oxblood",  hex: "#4A0E0E" },
+        ],
+        sizes.shoes
+      ),
+    },
+
+    {
+      name: "Leather Driving Gloves",
+      slug: "leather-driving-gloves",
+      description: "Unlined driving gloves in butter-soft nappa leather. Perforated knuckles for breathability and a snap-button wrist closure. A finishing touch that belongs in every man's winter wardrobe.",
+      price: 119,
+      comparePrice: null,
+      images: ["https://res.cloudinary.com/dvzs21utn/image/upload/v1780764913/cartello/products/gloves-tan.png", "https://res.cloudinary.com/dvzs21utn/image/upload/v1780764914/cartello/products/gloves-black.png"],
+      categoryId: accessories.id,
+      tags: ["gloves", "leather", "accessories", "winter"],
+      featured: false,
+      published: true,
+      variants: variants(
+        [
+          { name: "Tan",   hex: "#C19A6B" },
+          { name: "Black", hex: "#0A0A0A" },
+        ],
+        ["S", "M", "L", "XL"]
       ),
     },
   ]
 
-  for (const { variants, ...product } of products) {
+  for (const { variants: vars, ...product } of products) {
     const created = await prisma.product.create({
       data: {
         ...product,
         variants: {
-          create: variants.map((v) => ({
-            size: v.size ?? null,
-            color: v.color ?? null,
+          create: vars.map((v) => ({
+            size:     v.size ?? null,
+            color:    v.color ?? null,
             colorHex: v.colorHex ?? null,
-            price: v.price ?? product.price,
-            stock: v.stock ?? 8,
+            price:    v.price ?? product.price,
+            stock:    v.stock ?? 8,
           })),
         },
       },
     })
-    console.log(`  ✓ ${created.name} (${variants.length} variants)`)
+    console.log(`  ✓ ${created.name} (${vars.length} variants)`)
   }
 
-  // Clean up old categories no longer used
   await prisma.category.deleteMany({ where: { slug: "women" } })
 
-  console.log(`\n✅ Seed complete — ${products.length} products created`)
+  console.log(`\n✅ Seed complete — ${products.length} products`)
   console.log("   Admin: admin@cartello.com / Admin1234!")
 }
 

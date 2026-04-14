@@ -72,6 +72,8 @@ export function ProductDetailClient({ slug }: { slug: string }) {
   const wishlisted = wishlistHydrated && wishlistItems.includes(product.id)
   const price = selectedVariant?.price ?? product.price
   const isSale = product.comparePrice && product.comparePrice > product.price
+  const uniqueColors = [...new Set(product.variants.filter((v: any) => v.color).map((v: any) => v.color as string))]
+  const activeImage = selectedVariant?.color ? Math.max(0, uniqueColors.indexOf(selectedVariant.color)) : 0
   const inStock = selectedVariant ? selectedVariant.stock > 0 : true
   const avgRating = product.reviews.length
     ? product.reviews.reduce((s, r) => s + r.rating, 0) / product.reviews.length
@@ -139,7 +141,7 @@ export function ProductDetailClient({ slug }: { slug: string }) {
       </nav>
 
       <div className="grid grid-cols-1 gap-12 lg:grid-cols-2">
-        <ProductGallery images={product.images} name={product.name} />
+        <ProductGallery images={product.images} name={product.name} activeImage={activeImage} />
 
         <div className="flex flex-col">
           <div>
@@ -162,9 +164,9 @@ export function ProductDetailClient({ slug }: { slug: string }) {
               {isSale && (
                 <>
                   <span className="text-base text-neutral-400 line-through">{formatPrice(product.comparePrice!)}</span>
-                  <Badge variant="sale">
-                    -{Math.round((1 - product.price / product.comparePrice!) * 100)}%
-                  </Badge>
+                  <span className="font-display text-base italic font-bold text-[#c8a96e]">
+                    −{Math.round((1 - product.price / product.comparePrice!) * 100)}%
+                  </span>
                 </>
               )}
             </div>
@@ -284,30 +286,38 @@ export function ProductDetailClient({ slug }: { slug: string }) {
 
           <div>
             <h3 className="mb-4 text-base font-semibold text-neutral-900">Write a Review</h3>
-            <form onSubmit={handleSubmitReview} className="space-y-4">
-              <div>
-                <label className="mb-1.5 block text-sm font-medium text-neutral-700">Rating</label>
-                <StarRating rating={reviewRating} size="lg" interactive onRate={setReviewRating} />
-              </div>
-              <div>
-                <label className="mb-1.5 block text-sm font-medium text-neutral-700">Your review</label>
-                <textarea
-                  value={reviewText}
-                  onChange={(e) => setReviewText(e.target.value)}
-                  rows={4}
-                  required
-                  className="w-full rounded-xl border border-neutral-300 px-4 py-3 text-sm outline-none focus:border-neutral-400"
-                  placeholder="Share your experience…"
-                />
-              </div>
-              <button
-                type="submit"
-                disabled={submittingReview}
-                className="rounded-full bg-neutral-900 px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-neutral-700 disabled:opacity-50"
-              >
-                {submittingReview ? "Submitting…" : "Submit Review"}
-              </button>
-            </form>
+            {!session ? (
+              <p className="text-sm text-neutral-500">
+                <a href="/auth/signin" className="underline hover:text-neutral-900">Sign in</a> to leave a review.
+              </p>
+            ) : product.reviews.some((r: any) => r.userId === session.user?.id) ? (
+              <p className="text-sm text-neutral-500">You've already reviewed this product.</p>
+            ) : (
+              <form onSubmit={handleSubmitReview} className="space-y-4">
+                <div>
+                  <label className="mb-1.5 block text-sm font-medium text-neutral-700">Rating</label>
+                  <StarRating rating={reviewRating} size="lg" interactive onRate={setReviewRating} />
+                </div>
+                <div>
+                  <label className="mb-1.5 block text-sm font-medium text-neutral-700">Your review</label>
+                  <textarea
+                    value={reviewText}
+                    onChange={(e) => setReviewText(e.target.value)}
+                    rows={4}
+                    required
+                    className="w-full rounded-xl border border-neutral-300 px-4 py-3 text-sm outline-none focus:border-neutral-400"
+                    placeholder="Share your experience…"
+                  />
+                </div>
+                <button
+                  type="submit"
+                  disabled={submittingReview}
+                  className="rounded-full bg-neutral-900 px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-neutral-700 disabled:opacity-50"
+                >
+                  {submittingReview ? "Submitting…" : "Submit Review"}
+                </button>
+              </form>
+            )}
           </div>
         </div>
       </section>

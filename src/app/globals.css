@@ -38,6 +38,11 @@
   box-sizing: border-box;
 }
 
+:root {
+  --navbar-h: 4rem;   /* h-16 = 64px */
+  --marquee-h: 2.75rem; /* py-3.5 * 2 + text ≈ 44px */
+}
+
 html {
   scroll-behavior: smooth;
   scrollbar-gutter: stable;

@@ -72,7 +72,7 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
   return (
     <Link href={`/products/${product.slug}`} className="group relative block">
       {/* Image */}
-      <div className="relative aspect-[3/4] overflow-hidden rounded-2xl bg-neutral-100">
+      <div className="relative aspect-[3/4] overflow-hidden rounded-2xl bg-neutral-100 border border-neutral-200">
         {product.images[0] && (
           <Image
             src={product.images[0]}
@@ -94,8 +94,8 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
         )}
 
         {/* Badges */}
-        <div className="absolute left-3 top-3 flex flex-col gap-1.5">
-          {isNew && <Badge variant="new">New</Badge>}
+        <div className="absolute left-3 top-3 z-10 flex flex-col gap-2">
+          {isNew && <Badge variant="new" />}
           {isSale && (
             <Badge variant="sale">
               −{Math.round((1 - product.price / product.comparePrice!) * 100)}%
