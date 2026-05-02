@@ -2,10 +2,10 @@ import { Resend } from "resend"
 import { formatPrice } from "./utils"
 import type { OrderWithItems } from "@/types"
 
-const resend = new Resend(process.env.RESEND_API_KEY)
 const FROM = process.env.EMAIL_FROM ?? "Cartello <orders@cartello.com>"
 
 export async function sendOrderConfirmation(order: OrderWithItems) {
+  const resend = new Resend(process.env.RESEND_API_KEY)
   const itemsHtml = order.items
     .map(
       (item) => `
