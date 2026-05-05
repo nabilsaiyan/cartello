@@ -8,6 +8,7 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { signInSchema, type SignInInput } from "@/lib/validations"
 import { toast } from "sonner"
+import { signInWithGitHub, signInWithGoogle } from "../actions"
 
 export default function SignInPage() {
   return (
@@ -21,6 +22,7 @@ function SignInForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const callbackUrl = searchParams.get("callbackUrl") ?? "/"
+  const authError = searchParams.get("error")
   const [loading, setLoading] = useState(false)
 
   const {
@@ -59,13 +61,29 @@ function SignInForm() {
           <p className="mt-2 text-sm text-neutral-500">Sign in to your account to continue</p>
         </div>
 
+        {authError && (
+          <div className="mt-6 rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-600">
+            {authError === "OAuthAccountNotLinked"
+              ? "This email is already linked to a different sign-in method."
+              : authError === "OAuthCallbackError"
+              ? "OAuth sign-in failed — please try again."
+              : "Sign-in failed. Please try again."}
+          </div>
+        )}
+
         <div className="mt-8 space-y-3">
-          <button onClick={() => signIn("github", { callbackUrl })} className="flex w-full items-center justify-center gap-3 rounded-full border border-neutral-300 px-4 py-3 text-sm font-medium text-neutral-700 transition-colors hover:bg-neutral-50">
-            <GithubIcon />Continue with GitHub
-          </button>
-          <button onClick={() => signIn("google", { callbackUrl })} className="flex w-full items-center justify-center gap-3 rounded-full border border-neutral-300 px-4 py-3 text-sm font-medium text-neutral-700 transition-colors hover:bg-neutral-50">
-            <GoogleIcon />Continue with Google
-          </button>
+          <form action={signInWithGitHub}>
+            <input type="hidden" name="redirectTo" value={callbackUrl} />
+            <button type="submit" className="flex w-full items-center justify-center gap-3 rounded-full border border-neutral-300 px-4 py-3 text-sm font-medium text-neutral-700 transition-colors hover:bg-neutral-50">
+              <GithubIcon />Continue with GitHub
+            </button>
+          </form>
+          <form action={signInWithGoogle}>
+            <input type="hidden" name="redirectTo" value={callbackUrl} />
+            <button type="submit" className="flex w-full items-center justify-center gap-3 rounded-full border border-neutral-300 px-4 py-3 text-sm font-medium text-neutral-700 transition-colors hover:bg-neutral-50">
+              <GoogleIcon />Continue with Google
+            </button>
+          </form>
         </div>
 
         <div className="relative my-6">
