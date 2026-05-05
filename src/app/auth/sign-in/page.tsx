@@ -64,10 +64,12 @@ function SignInForm() {
         {authError && (
           <div className="mt-6 rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-600">
             {authError === "OAuthAccountNotLinked"
-              ? "This email is already linked to a different sign-in method."
-              : authError === "OAuthCallbackError"
+              ? "This email is already linked to a different sign-in method. Please sign in with your original method."
+              : authError === "OAuthCallbackError" || authError === "CallbackRouteError"
               ? "OAuth sign-in failed — please try again."
-              : "Sign-in failed. Please try again."}
+              : authError === "MissingSecret" || authError === "Configuration"
+              ? "Server configuration error — please contact support."
+              : `Sign-in failed (${authError}). Please try again.`}
           </div>
         )}
 

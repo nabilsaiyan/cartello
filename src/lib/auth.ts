@@ -16,8 +16,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     error: "/auth/sign-in",
   },
   providers: [
-    Google,
-    GitHub,
+    Google({ allowDangerousEmailAccountLinking: true }),
+    GitHub({ allowDangerousEmailAccountLinking: true }),
     Credentials({
       async authorize(credentials) {
         const parsed = signInSchema.safeParse(credentials)
