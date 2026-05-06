@@ -29,7 +29,10 @@ export async function signInWithGitHub(formData: FormData) {
       redirect(`/auth/sign-in?error=${encodeURIComponent(error.type ?? "OAuthSignin")}`)
     }
     const digest = (error as { digest?: string }).digest
-    if (!digest?.startsWith("NEXT_REDIRECT")) {
+    if (digest?.startsWith("NEXT_REDIRECT")) {
+      const redirectTarget = digest.split(";")[2]
+      console.log("[auth:github] Redirecting to", redirectTarget)
+    } else {
       console.error("[auth:github] Unexpected error", error)
     }
     throw error
@@ -47,7 +50,10 @@ export async function signInWithGoogle(formData: FormData) {
       redirect(`/auth/sign-in?error=${encodeURIComponent(error.type ?? "OAuthSignin")}`)
     }
     const digest = (error as { digest?: string }).digest
-    if (!digest?.startsWith("NEXT_REDIRECT")) {
+    if (digest?.startsWith("NEXT_REDIRECT")) {
+      const redirectTarget = digest.split(";")[2]
+      console.log("[auth:google] Redirecting to", redirectTarget)
+    } else {
       console.error("[auth:google] Unexpected error", error)
     }
     throw error
