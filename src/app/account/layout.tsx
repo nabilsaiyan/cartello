@@ -4,6 +4,7 @@ import { redirect } from "next/navigation"
 import { User, Package, Heart, MapPin, LogOut } from "lucide-react"
 import { Navbar } from "@/components/layout/Navbar"
 import { Footer } from "@/components/layout/Footer"
+import { signOutAction } from "@/app/auth/actions"
 
 const navItems = [
   { href: "/account", label: "Dashboard", icon: User },
@@ -43,13 +44,15 @@ export default async function AccountLayout({ children }: { children: React.Reac
                     {item.label}
                   </Link>
                 ))}
-                <Link
-                  href="/api/auth/signout?callbackUrl=/"
-                  className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-red-500 transition-colors hover:bg-red-50"
-                >
-                  <LogOut className="h-4 w-4" />
-                  Sign out
-                </Link>
+                <form action={signOutAction}>
+                  <button
+                    type="submit"
+                    className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-red-500 transition-colors hover:bg-red-50"
+                  >
+                    <LogOut className="h-4 w-4" />
+                    Sign out
+                  </button>
+                </form>
               </nav>
             </div>
           </aside>

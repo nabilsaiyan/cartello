@@ -1,8 +1,12 @@
 "use server"
 
-import { signIn } from "@/lib/auth"
+import { signIn, signOut } from "@/lib/auth"
 import { AuthError } from "next-auth"
 import { redirect } from "next/navigation"
+
+export async function signOutAction() {
+  await signOut({ redirectTo: "/" })
+}
 
 function logEnvStatus(provider: string) {
   console.log(`[auth:${provider}] ENV CHECK`, {
