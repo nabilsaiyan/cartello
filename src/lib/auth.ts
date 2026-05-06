@@ -36,10 +36,20 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     }),
   ],
   callbacks: {
-    jwt({ token, user }) {
+    jwt({ token, user, account, profile }) {
       if (user) {
         token.id = user.id
         token.role = (user as { role?: string }).role
+      }
+      if (account?.provider === "google" && profile) {
+        const p = profile as { name?: string; picture?: string }
+        if (p.name) token.name = p.name
+        if (p.picture) token.picture = p.picture
+      }
+      if (account?.provider === "github" && profile) {
+        const p = profile as { name?: string; login?: string; avatar_url?: string }
+        token.name = p.name ?? p.login ?? token.name
+        token.picture = p.avatar_url ?? token.picture
       }
       return token
     },
@@ -47,6 +57,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (token) {
         session.user.id = token.id as string
         session.user.role = token.role as string
+        if (token.picture) session.user.image = token.picture as string
       }
       return session
     },
