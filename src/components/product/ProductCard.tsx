@@ -5,9 +5,11 @@ import Link from "next/link"
 import { Heart, ShoppingBag } from "lucide-react"
 import { motion } from "framer-motion"
 import { toast } from "sonner"
+import { useState } from "react"
 import { useSession } from "next-auth/react"
 import { Badge } from "@/components/ui/Badge"
 import { StarRating } from "@/components/ui/StarRating"
+import { Spinner } from "@/components/ui/Spinner"
 import { useCartStore } from "@/store/cart-store"
 import { useWishlistStore } from "@/store/wishlist-store"
 import { formatPrice } from "@/lib/utils"
@@ -16,26 +18,33 @@ import type { ProductWithRelations } from "@/types"
 interface ProductCardProps {
   product: ProductWithRelations
   priority?: boolean
+  index?: number
 }
 
-export function ProductCard({ product, priority = false }: ProductCardProps) {
+export function ProductCard({ product, priority = false, index = 0 }: ProductCardProps) {
   const { data: session } = useSession()
   const addItem = useCartStore((s) => s.addItem)
   const toggle = useWishlistStore((s) => s.toggle)
   const wishlistItems = useWishlistStore((s) => s.items)
   const wishlistHydrated = useWishlistStore((s) => s._hasHydrated)
   const wishlisted = wishlistHydrated && wishlistItems.includes(product.id)
+  const [wishlistLoading, setWishlistLoading] = useState(false)
 
-  function handleWishlistToggle(e: React.MouseEvent) {
+  async function handleWishlistToggle(e: React.MouseEvent) {
     e.preventDefault()
     e.stopPropagation()
     toggle(product.id)
     if (session?.user?.id) {
-      fetch("/api/wishlist", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ productId: product.id }),
-      }).catch(() => {})
+      setWishlistLoading(true)
+      try {
+        await fetch("/api/wishlist", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ productId: product.id }),
+        })
+      } finally {
+        setWishlistLoading(false)
+      }
     }
   }
 
@@ -70,6 +79,12 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
   }
 
   return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-40px" }}
+      transition={{ duration: 0.4, delay: (index % 4) * 0.07, ease: [0.25, 0.46, 0.45, 0.94] }}
+    >
     <Link href={`/products/${product.slug}`} className="group relative block">
       {/* Image */}
       <div className="relative aspect-[3/4] overflow-hidden rounded-2xl bg-neutral-100 border border-neutral-200">
@@ -117,12 +132,14 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
           </button>
           <button
             onClick={handleWishlistToggle}
+            disabled={wishlistLoading}
             aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
-            className="flex h-9 w-9 items-center justify-center rounded-full bg-white/95 shadow backdrop-blur-sm transition-colors hover:bg-neutral-900 hover:text-white"
+            className="flex h-9 w-9 items-center justify-center rounded-full bg-white/95 shadow backdrop-blur-sm transition-colors hover:bg-neutral-900 hover:text-white disabled:opacity-60"
           >
-            <Heart
-              className={`h-4 w-4 transition-colors ${wishlisted ? "fill-red-500 text-red-500" : ""}`}
-            />
+            {wishlistLoading
+              ? <Spinner className="h-3.5 w-3.5" />
+              : <Heart className={`h-4 w-4 transition-colors ${wishlisted ? "fill-red-500 text-red-500" : ""}`} />
+            }
           </button>
         </div>
       </div>
@@ -154,5 +171,6 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
         </div>
       </div>
     </Link>
+    </motion.div>
   )
 }

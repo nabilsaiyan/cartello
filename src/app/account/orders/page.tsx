@@ -2,6 +2,7 @@ import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import Link from "next/link"
 import { Badge } from "@/components/ui/Badge"
+import { AnimatedList } from "@/components/ui/AnimatedList"
 import { formatPrice } from "@/lib/utils"
 import type { Metadata } from "next"
 
@@ -35,7 +36,7 @@ export default async function OrdersPage() {
           </Link>
         </div>
       ) : (
-        <div className="space-y-3">
+        <AnimatedList className="space-y-3">
           {orders.map((order) => (
             <div key={order.id} className="rounded-2xl border border-neutral-100 p-5">
               <div className="flex flex-wrap items-start justify-between gap-3">
@@ -73,7 +74,7 @@ export default async function OrdersPage() {
               </div>
             </div>
           ))}
-        </div>
+        </AnimatedList>
       )}
     </div>
   )

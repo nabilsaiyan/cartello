@@ -8,6 +8,8 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { signInSchema, type SignInInput } from "@/lib/validations"
 import { toast } from "sonner"
+import { motion } from "framer-motion"
+import { Spinner } from "@/components/ui/Spinner"
 import { signInWithGitHub, signInWithGoogle } from "../actions"
 
 export default function SignInPage() {
@@ -24,6 +26,7 @@ function SignInForm() {
   const callbackUrl = searchParams.get("callbackUrl") ?? "/"
   const authError = searchParams.get("error")
   const [loading, setLoading] = useState(false)
+  const [oauthLoading, setOauthLoading] = useState<"github" | "google" | null>(null)
 
   const {
     register,
@@ -54,7 +57,12 @@ function SignInForm() {
 
   return (
     <div className="flex min-h-screen items-center justify-center px-4">
-      <div className="w-full max-w-sm">
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
+        className="w-full max-w-sm"
+      >
         <div className="text-center">
           <Link href="/" className="font-display text-3xl uppercase tracking-[0.2em] text-neutral-900">cartello</Link>
           <h1 className="mt-6 text-2xl font-semibold text-neutral-900">Welcome back</h1>
@@ -74,16 +82,26 @@ function SignInForm() {
         )}
 
         <div className="mt-8 space-y-3">
-          <form action={signInWithGitHub}>
+          <form action={signInWithGitHub} onSubmit={() => setOauthLoading("github")}>
             <input type="hidden" name="redirectTo" value={callbackUrl} />
-            <button type="submit" className="flex w-full items-center justify-center gap-3 rounded-full border border-neutral-300 px-4 py-3 text-sm font-medium text-neutral-700 transition-colors hover:bg-neutral-50">
-              <GithubIcon />Continue with GitHub
+            <button
+              type="submit"
+              disabled={!!oauthLoading}
+              className="flex w-full items-center justify-center gap-3 rounded-full border border-neutral-300 px-4 py-3 text-sm font-medium text-neutral-700 transition-colors hover:bg-neutral-50 disabled:opacity-60"
+            >
+              {oauthLoading === "github" ? <Spinner /> : <GithubIcon />}
+              Continue with GitHub
             </button>
           </form>
-          <form action={signInWithGoogle}>
+          <form action={signInWithGoogle} onSubmit={() => setOauthLoading("google")}>
             <input type="hidden" name="redirectTo" value={callbackUrl} />
-            <button type="submit" className="flex w-full items-center justify-center gap-3 rounded-full border border-neutral-300 px-4 py-3 text-sm font-medium text-neutral-700 transition-colors hover:bg-neutral-50">
-              <GoogleIcon />Continue with Google
+            <button
+              type="submit"
+              disabled={!!oauthLoading}
+              className="flex w-full items-center justify-center gap-3 rounded-full border border-neutral-300 px-4 py-3 text-sm font-medium text-neutral-700 transition-colors hover:bg-neutral-50 disabled:opacity-60"
+            >
+              {oauthLoading === "google" ? <Spinner /> : <GoogleIcon />}
+              Continue with Google
             </button>
           </form>
         </div>
@@ -113,7 +131,7 @@ function SignInForm() {
           Don&apos;t have an account?{" "}
           <Link href="/auth/sign-up" className="font-medium text-neutral-900 hover:underline">Sign up</Link>
         </p>
-      </div>
+      </motion.div>
     </div>
   )
 }

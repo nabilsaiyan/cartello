@@ -8,10 +8,13 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { signUpSchema, type SignUpInput } from "@/lib/validations"
 import { toast } from "sonner"
+import { motion } from "framer-motion"
+import { Spinner } from "@/components/ui/Spinner"
 
 export default function SignUpPage() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
+  const [oauthLoading, setOauthLoading] = useState<"github" | "google" | null>(null)
 
   const { register, handleSubmit, formState: { errors } } = useForm<SignUpInput>({ resolver: zodResolver(signUpSchema) })
 
@@ -49,7 +52,12 @@ export default function SignUpPage() {
 
   return (
     <div className="flex min-h-screen items-center justify-center px-4">
-      <div className="w-full max-w-sm">
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
+        className="w-full max-w-sm"
+      >
         <div className="text-center">
           <Link href="/" className="font-display text-3xl uppercase tracking-[0.2em] text-neutral-900">cartello</Link>
           <h1 className="mt-6 text-2xl font-semibold text-neutral-900">Create your account</h1>
@@ -57,11 +65,21 @@ export default function SignUpPage() {
         </div>
 
         <div className="mt-8 space-y-3">
-          <button onClick={() => signIn("github", { callbackUrl: "/" })} className="flex w-full items-center justify-center gap-3 rounded-full border border-neutral-300 px-4 py-3 text-sm font-medium text-neutral-700 hover:bg-neutral-50">
-            <GithubIcon />Continue with GitHub
+          <button
+            onClick={() => { setOauthLoading("github"); signIn("github", { callbackUrl: "/" }) }}
+            disabled={!!oauthLoading}
+            className="flex w-full items-center justify-center gap-3 rounded-full border border-neutral-300 px-4 py-3 text-sm font-medium text-neutral-700 transition-colors hover:bg-neutral-50 disabled:opacity-60"
+          >
+            {oauthLoading === "github" ? <Spinner /> : <GithubIcon />}
+            Continue with GitHub
           </button>
-          <button onClick={() => signIn("google", { callbackUrl: "/" })} className="flex w-full items-center justify-center gap-3 rounded-full border border-neutral-300 px-4 py-3 text-sm font-medium text-neutral-700 hover:bg-neutral-50">
-            <GoogleIcon />Continue with Google
+          <button
+            onClick={() => { setOauthLoading("google"); signIn("google", { callbackUrl: "/" }) }}
+            disabled={!!oauthLoading}
+            className="flex w-full items-center justify-center gap-3 rounded-full border border-neutral-300 px-4 py-3 text-sm font-medium text-neutral-700 transition-colors hover:bg-neutral-50 disabled:opacity-60"
+          >
+            {oauthLoading === "google" ? <Spinner /> : <GoogleIcon />}
+            Continue with Google
           </button>
         </div>
 
@@ -95,7 +113,7 @@ export default function SignUpPage() {
           Already have an account?{" "}
           <Link href="/auth/sign-in" className="font-medium text-neutral-900 hover:underline">Sign in</Link>
         </p>
-      </div>
+      </motion.div>
     </div>
   )
 }
