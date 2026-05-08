@@ -1,7 +1,7 @@
 import Link from "next/link"
 import { auth } from "@/lib/auth"
 import { redirect } from "next/navigation"
-import { User, Package, Heart, MapPin } from "lucide-react"
+import { User, Package, Heart, Settings, MapPin } from "lucide-react"
 import { Navbar } from "@/components/layout/Navbar"
 import { Footer } from "@/components/layout/Footer"
 import { SignOutButton } from "@/components/layout/SignOutButton"
@@ -10,7 +10,8 @@ const navItems = [
   { href: "/account", label: "Dashboard", icon: User },
   { href: "/account/orders", label: "Orders", icon: Package },
   { href: "/account/wishlist", label: "Wishlist", icon: Heart },
-  { href: "/account/profile", label: "Profile", icon: MapPin },
+  { href: "/account/addresses", label: "Addresses", icon: MapPin },
+  { href: "/account/profile", label: "Profile", icon: Settings },
 ]
 
 export default async function AccountLayout({ children }: { children: React.ReactNode }) {

@@ -4,6 +4,9 @@ import Link from "next/link"
 import { Package, Heart, ArrowRight } from "lucide-react"
 import { Badge } from "@/components/ui/Badge"
 import { formatPrice } from "@/lib/utils"
+import type { Metadata } from "next"
+
+export const metadata: Metadata = { title: "My Account" }
 
 const statusVariant: Record<string, "success" | "warning" | "default" | "sale"> = {
   DELIVERED: "success",

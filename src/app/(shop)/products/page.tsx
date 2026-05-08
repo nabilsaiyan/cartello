@@ -1,7 +1,7 @@
 import { Suspense } from "react"
 import { prisma } from "@/lib/prisma"
 import { ProductCard } from "@/components/product/ProductCard"
-import { ProductCardSkeleton } from "@/components/ui/Skeleton"
+import { ProductCardSkeleton, FiltersSkeleton, SortSkeleton } from "@/components/ui/Skeleton"
 import { SortSelect } from "@/components/product/SortSelect"
 import { ProductFilters } from "@/components/product/ProductFilters"
 import type { ProductWithRelations } from "@/types"
@@ -100,14 +100,14 @@ export default async function ProductsPage({ searchParams }: PageProps) {
         </div>
         <div className="flex items-center gap-2">
           <span className="hidden text-sm text-neutral-500 sm:inline">Sort:</span>
-          <Suspense fallback={null}>
+          <Suspense fallback={<SortSkeleton />}>
             <SortSelect currentSort={params.sort} />
           </Suspense>
         </div>
       </div>
 
       <div className="flex gap-8">
-        <Suspense fallback={null}>
+        <Suspense fallback={<FiltersSkeleton />}>
           <ProductFilters categories={categories} />
         </Suspense>
 
