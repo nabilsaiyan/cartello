@@ -4,7 +4,13 @@ import type { NextRequest } from "next/server"
 
 export async function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl
-  const token = await getToken({ req, secret: process.env.AUTH_SECRET })
+  const secure = process.env.NODE_ENV === "production"
+  const token = await getToken({
+    req,
+    secret: process.env.AUTH_SECRET,
+    secureCookie: secure,
+    cookieName: secure ? "__Secure-authjs.session-token" : "authjs.session-token",
+  })
 
   if (pathname.startsWith("/account") && !token) {
     return NextResponse.redirect(new URL(`/auth/sign-in?callbackUrl=${pathname}`, req.url))
