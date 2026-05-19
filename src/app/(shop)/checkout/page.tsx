@@ -105,7 +105,7 @@ function ContactStep({
       <div>
         <select
           {...register("address.country")}
-          className="w-full rounded-xl border border-neutral-300 px-4 py-3 text-sm outline-none focus:border-neutral-400"
+          className="w-full appearance-none rounded-xl border border-neutral-300 bg-white px-4 py-3 text-sm outline-none focus:border-neutral-400"
         >
           <option value="">Select country</option>
           <optgroup label="Europe">

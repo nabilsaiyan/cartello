@@ -103,7 +103,7 @@ function AddressForm({ onSuccess, onCancel }: { onSuccess: () => void; onCancel:
         </div>
         <div>
           <label className={labelCls}>Country <span className="text-red-400">*</span></label>
-          <select value={form.country} onChange={(e) => set("country", e.target.value)} className={inputCls}>
+          <select value={form.country} onChange={(e) => set("country", e.target.value)} className={`${inputCls} appearance-none bg-white`}>
             {COUNTRIES.map((c) => <option key={c}>{c}</option>)}
           </select>
         </div>
