@@ -5,7 +5,8 @@ import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Lock } from "lucide-react"
+import { loadStripe } from "@stripe/stripe-js"
+import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js"
 import { toast } from "sonner"
 import Image from "next/image"
 import { useCartStore } from "@/store/cart-store"
@@ -14,6 +15,7 @@ import { FREE_SHIPPING_THRESHOLD, SHIPPING_RATES } from "@/lib/constants"
 import { checkoutSchema, type CheckoutInput } from "@/lib/validations"
 import type { LocalCartItem } from "@/types"
 
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!)
 const STEPS = ["Contact & Shipping", "Shipping Method", "Payment"]
 
 // ── Step 0: own form instance, validated by handleSubmit before advancing ──────
@@ -208,7 +210,7 @@ function ShippingStep({
   )
 }
 
-// ── Step 2: Payment form ──────────────────────────────────────────────────────
+// ── Step 2: Stripe payment form ───────────────────────────────────────────────
 function PaymentStep({
   clientSecret,
   orderId,
@@ -220,102 +222,72 @@ function PaymentStep({
   onSuccess: () => void
   onBack: () => void
 }) {
-  const [paying, setPaying] = useState(false)
-  const [card, setCard] = useState("")
-  const [expiry, setExpiry] = useState("")
-  const [cvc, setCvc] = useState("")
-  const [name, setName] = useState("")
-
-  function formatCard(v: string) {
-    return v.replace(/\D/g, "").slice(0, 16).replace(/(.{4})/g, "$1 ").trim()
-  }
-  function formatExpiry(v: string) {
-    const d = v.replace(/\D/g, "").slice(0, 4)
-    return d.length > 2 ? `${d.slice(0, 2)} / ${d.slice(2)}` : d
-  }
-
-  async function handlePay(e: React.FormEvent) {
-    e.preventDefault()
-    setPaying(true)
-    await new Promise((r) => setTimeout(r, 1400))
-    await fetch(`/api/orders/${orderId}/confirm`, { method: "POST" }).catch(() => {})
-    onSuccess()
-  }
-
-  const inputCls = "w-full rounded-xl border border-neutral-300 bg-white px-4 py-3 text-sm outline-none focus:border-neutral-400"
-
   return (
     <div>
       <h2 className="mb-4 text-lg font-semibold text-neutral-900">Payment</h2>
-      <form onSubmit={handlePay} className="space-y-4">
-        <div className="space-y-3 rounded-2xl border border-neutral-200 p-4">
-          <div>
-            <label className="mb-1.5 block text-xs font-medium uppercase tracking-wide text-neutral-400">Card number</label>
-            <input
-              value={card}
-              onChange={(e) => setCard(formatCard(e.target.value))}
-              placeholder="1234 5678 9012 3456"
-              className={inputCls}
-              required
-            />
-          </div>
-          <div>
-            <label className="mb-1.5 block text-xs font-medium uppercase tracking-wide text-neutral-400">Name on card</label>
-            <input
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="James Holloway"
-              className={inputCls}
-              required
-            />
-          </div>
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="mb-1.5 block text-xs font-medium uppercase tracking-wide text-neutral-400">Expiry</label>
-              <input
-                value={expiry}
-                onChange={(e) => setExpiry(formatExpiry(e.target.value))}
-                placeholder="MM / YY"
-                className={inputCls}
-                required
-              />
-            </div>
-            <div>
-              <label className="mb-1.5 block text-xs font-medium uppercase tracking-wide text-neutral-400">CVC</label>
-              <input
-                value={cvc}
-                onChange={(e) => setCvc(e.target.value.replace(/\D/g, "").slice(0, 3))}
-                placeholder="123"
-                className={inputCls}
-                required
-              />
-            </div>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-1.5 text-xs text-neutral-400">
-          <Lock className="h-3 w-3" />
-          Payments are encrypted and secure
-        </div>
-
-        <div className="flex gap-3">
-          <button
-            type="button"
-            onClick={onBack}
-            className="flex-1 rounded-full border border-neutral-300 py-3 text-sm font-medium text-neutral-700 hover:bg-neutral-50"
-          >
-            Back
-          </button>
-          <button
-            type="submit"
-            disabled={paying}
-            className="flex-1 rounded-full bg-neutral-900 py-3 text-sm font-semibold text-white hover:bg-neutral-700 disabled:opacity-50"
-          >
-            {paying ? "Processing…" : "Pay Now"}
-          </button>
-        </div>
-      </form>
+      <Elements
+        stripe={stripePromise}
+        options={{ clientSecret, appearance: { theme: "flat", variables: { borderRadius: "12px" } } }}
+      >
+        <StripeForm orderId={orderId} onSuccess={onSuccess} onBack={onBack} />
+      </Elements>
     </div>
+  )
+}
+
+function StripeForm({
+  orderId,
+  onSuccess,
+  onBack,
+}: {
+  orderId: string
+  onSuccess: () => void
+  onBack: () => void
+}) {
+  const stripe = useStripe()
+  const elements = useElements()
+  const [paying, setPaying] = useState(false)
+
+  async function handlePay(e: React.FormEvent) {
+    e.preventDefault()
+    if (!stripe || !elements) return
+    setPaying(true)
+    const { error } = await stripe.confirmPayment({
+      elements,
+      confirmParams: {
+        return_url: `${window.location.origin}/checkout/success?orderId=${orderId}`,
+      },
+      redirect: "if_required",
+    })
+    if (error) {
+      toast.error(error.message ?? "Payment failed")
+      setPaying(false)
+    } else {
+      await fetch(`/api/orders/${orderId}/confirm`, { method: "POST" }).catch(() => {})
+      onSuccess()
+    }
+  }
+
+  return (
+    <form onSubmit={handlePay} className="space-y-4">
+      <PaymentElement />
+      <div className="flex gap-3">
+        <button
+          type="button"
+          onClick={onBack}
+          className="flex-1 rounded-full border border-neutral-300 py-3 text-sm font-medium text-neutral-700 hover:bg-neutral-50"
+        >
+          Back
+        </button>
+        <button
+          type="submit"
+          disabled={!stripe || paying}
+          className="flex-1 rounded-full bg-neutral-900 py-3 text-sm font-semibold text-white hover:bg-neutral-700 disabled:opacity-50"
+        >
+          {paying ? "Processing…" : "Pay Now"}
+        </button>
+      </div>
+    </form>
   )
 }
 
