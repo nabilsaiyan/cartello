@@ -43,6 +43,7 @@ function ContactStep({
         <input
           type="email"
           placeholder="Email address"
+          autoComplete="email"
           {...register("email")}
           className="w-full rounded-xl border border-neutral-300 px-4 py-3 text-sm outline-none focus:border-neutral-400"
         />
@@ -53,6 +54,7 @@ function ContactStep({
         <div>
           <input
             placeholder="First name"
+            autoComplete="given-name"
             {...register("address.firstName")}
             className="w-full rounded-xl border border-neutral-300 px-4 py-3 text-sm outline-none focus:border-neutral-400"
           />
@@ -61,6 +63,7 @@ function ContactStep({
         <div>
           <input
             placeholder="Last name"
+            autoComplete="family-name"
             {...register("address.lastName")}
             className="w-full rounded-xl border border-neutral-300 px-4 py-3 text-sm outline-none focus:border-neutral-400"
           />
@@ -71,6 +74,7 @@ function ContactStep({
       <div>
         <input
           placeholder="Address line 1"
+          autoComplete="address-line1"
           {...register("address.address1")}
           className="w-full rounded-xl border border-neutral-300 px-4 py-3 text-sm outline-none focus:border-neutral-400"
         />
@@ -79,6 +83,7 @@ function ContactStep({
 
       <input
         placeholder="Address line 2 (optional)"
+        autoComplete="address-line2"
         {...register("address.address2")}
         className="w-full rounded-xl border border-neutral-300 px-4 py-3 text-sm outline-none focus:border-neutral-400"
       />
@@ -87,6 +92,7 @@ function ContactStep({
         <div>
           <input
             placeholder="City"
+            autoComplete="address-level2"
             {...register("address.city")}
             className="w-full rounded-xl border border-neutral-300 px-4 py-3 text-sm outline-none focus:border-neutral-400"
           />
@@ -95,6 +101,7 @@ function ContactStep({
         <div>
           <input
             placeholder="Postal code"
+            autoComplete="postal-code"
             {...register("address.postalCode")}
             className="w-full rounded-xl border border-neutral-300 px-4 py-3 text-sm outline-none focus:border-neutral-400"
           />
@@ -104,6 +111,7 @@ function ContactStep({
 
       <div>
         <select
+          autoComplete="country"
           {...register("address.country")}
           className="w-full appearance-none rounded-xl border border-neutral-300 bg-white px-4 py-3 text-sm outline-none focus:border-neutral-400"
         >
