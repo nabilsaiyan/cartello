@@ -445,15 +445,17 @@ export default function CheckoutPage() {
                   key={`${item.productId}-${item.variantId}`}
                   className="flex items-center gap-3 pt-3 first:pt-0"
                 >
-                  <div className="relative h-14 w-12 flex-shrink-0 overflow-hidden rounded-lg bg-neutral-200">
-                    <Image
-                      src={item.image}
-                      alt={item.name}
-                      fill
-                      className="object-cover"
-                      sizes="48px"
-                    />
-                    <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-neutral-700 text-[10px] font-bold text-white">
+                  <div className="relative h-14 w-12 flex-shrink-0">
+                    <div className="h-full w-full overflow-hidden rounded-lg bg-neutral-200">
+                      <Image
+                        src={item.image}
+                        alt={item.name}
+                        fill
+                        className="object-cover"
+                        sizes="48px"
+                      />
+                    </div>
+                    <span className="absolute -right-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-neutral-700 text-[10px] font-bold text-white">
                       {item.quantity}
                     </span>
                   </div>
