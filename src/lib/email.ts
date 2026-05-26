@@ -45,7 +45,7 @@ export async function sendOrderConfirmation(order: OrderWithItems) {
     })
     .join("")
 
-  await resend.emails.send({
+  const result = await resend.emails.send({
     from: FROM,
     to: order.email,
     subject: `Order confirmed — #${orderId}`,
@@ -141,4 +141,9 @@ export async function sendOrderConfirmation(order: OrderWithItems) {
 </body>
 </html>`,
   })
+  if (result.error) {
+    console.error("[email] Resend error:", JSON.stringify(result.error))
+    throw new Error(result.error.message)
+  }
+  console.log("[email] Sent order confirmation to", order.email, "id:", result.data?.id)
 }
