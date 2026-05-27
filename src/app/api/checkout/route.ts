@@ -25,7 +25,7 @@ export async function POST(req: Request) {
   const paymentIntent = await stripe.paymentIntents.create({
     amount: Math.round(total * 100),
     currency: "eur",
-    automatic_payment_methods: { enabled: true },
+    payment_method_types: ["card", "klarna"],
     metadata: {
       email,
       userId: session?.user?.id ?? "",
